@@ -30,3 +30,28 @@ const handleInput = (event) => {
     }}
   </p>
 </template>
+
+<style scoped>
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #a9b9cc;
+  border-radius: 8px;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: 3px solid #dbeafe;
+}
+
+.input-status {
+  margin: 12px 0 0;
+  color: #526276;
+}
+</style>

@@ -80,3 +80,30 @@ const showDetail = (weather) => {
     </div>
   </section>
 </template>
+
+<style scoped>
+.weather-mockup {
+  display: grid;
+  gap: 28px;
+}
+
+#weather-list-title {
+  margin: 0 0 14px;
+  font-size: 1.3rem;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.selection-status {
+  padding: 20px;
+  border: 1px solid #d6e0ed;
+  border-left: 5px solid #2563eb;
+  border-radius: 12px;
+  background: #ffffff;
+  font-weight: 700;
+}
+</style>
