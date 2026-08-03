@@ -1,3 +1,7 @@
+<script setup>
+import WeatherParent from '../components/weather/WeatherParent.vue'
+</script>
+
 <template>
-  <h1>날씨 대시보드</h1>
+  <WeatherParent />
 </template>
