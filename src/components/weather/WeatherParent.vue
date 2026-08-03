@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch, watchEffect } from 'vue'
 import BaseDashboardCard from './BaseDashboardCard.vue'
+import SearchBar from './SearchBar.vue'
 
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -23,6 +24,10 @@ const filteredWeatherList = computed(() => {
 
 const selectCity = (weather) => {
   selectedCityInfo.value = weather
+}
+
+const updateSearchQuery = (value) => {
+  searchQuery.value = value
 }
 
 watch(selectedCityInfo, (newCity, oldCity) => {
@@ -48,21 +53,7 @@ const showDetail = (cityName, status) => {
 <template>
   <section class="weather-mockup">
     <BaseDashboardCard class="search-panel">
-      <label for="city-search">도시 검색어</label>
-      <input
-        id="city-search"
-        :value="searchQuery"
-        type="text"
-        placeholder="도시명을 입력하세요"
-        @input="searchQuery = $event.target.value"
-      />
-      <p class="input-status">
-        {{
-          searchQuery.trim()
-            ? `검색 중인 도시: ${searchQuery.trim()}`
-            : '검색어를 입력하지 않았습니다.'
-        }}
-      </p>
+      <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="weather-list-title">
