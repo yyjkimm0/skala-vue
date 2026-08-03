@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -28,6 +28,15 @@ watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
+})
+
+watchEffect(() => {
+  const query = searchQuery.value.trim()
+  const resultNames = filteredWeatherList.value.map((weather) => weather.name)
+
+  console.log('[watchEffect] 검색 상태')
+  console.log(`검색어: ${query || '입력 없음'}`)
+  console.log(`검색 결과: ${resultNames.length ? resultNames.join(', ') : '검색 결과 없음'}`)
 })
 
 const showDetail = (cityName, status) => {
