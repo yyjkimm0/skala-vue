@@ -2,12 +2,23 @@
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { weatherList } from '../data/weatherData.js'
+import { useConfigStore } from '../stores/configStore.js'
+import { convertTemperature } from '../utils/temperature.js'
 
 const route = useRoute()
+const configStore = useConfigStore()
 
 const city = computed(() =>
   weatherList.find((weather) => weather.id === route.params.cityId),
 )
+
+const displayTemperature = computed(() => {
+  if (!city.value) {
+    return null
+  }
+
+  return convertTemperature(city.value.temp, configStore.unit)
+})
 </script>
 
 <template>
@@ -25,7 +36,7 @@ const city = computed(() =>
       </div>
       <div>
         <dt>현재 기온</dt>
-        <dd>{{ city.temp }}℃</dd>
+        <dd>{{ displayTemperature }}{{ configStore.unitSymbol }}</dd>
       </div>
       <div>
         <dt>습도</dt>

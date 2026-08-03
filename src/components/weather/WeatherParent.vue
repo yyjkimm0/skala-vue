@@ -2,11 +2,14 @@
 import { computed, ref, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { weatherList } from '../../data/weatherData.js'
+import { useConfigStore } from '../../stores/configStore.js'
+import { convertTemperature } from '../../utils/temperature.js'
 import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
 const router = useRouter()
+const configStore = useConfigStore()
 
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
@@ -19,6 +22,14 @@ const filteredWeatherList = computed(() => {
   }
 
   return weatherList.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
+})
+
+const selectedTemperature = computed(() => {
+  if (!selectedCityInfo.value) {
+    return null
+  }
+
+  return convertTemperature(selectedCityInfo.value.temp, configStore.unit)
 })
 
 const selectCity = (weather) => {
@@ -67,6 +78,8 @@ const showDetail = (weather) => {
           v-for="weather in filteredWeatherList"
           :key="weather.id"
           :weather="weather"
+          :unit="configStore.unit"
+          :unit-symbol="configStore.unitSymbol"
           @select-card="selectCity"
           @click-detail="showDetail"
         />
@@ -77,7 +90,7 @@ const showDetail = (weather) => {
     <div class="selection-status" role="status" aria-live="polite">
       {{
         selectedCityInfo
-          ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedCityInfo.temp}℃이고 날씨는 ${selectedCityInfo.status}입니다.`
+          ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
           : '검색 후 원하는 날씨 카드를 선택해 보세요.'
       }}
     </div>

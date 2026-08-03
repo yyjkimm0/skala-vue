@@ -1,12 +1,27 @@
 <script setup>
+import { computed } from 'vue'
+import { convertTemperature } from '../../utils/temperature.js'
+
 const props = defineProps({
   weather: {
     type: Object,
     required: true,
   },
+  unit: {
+    type: String,
+    required: true,
+  },
+  unitSymbol: {
+    type: String,
+    required: true,
+  },
 })
 
 const emit = defineEmits(['select-card', 'click-detail'])
+
+const displayTemperature = computed(() =>
+  convertTemperature(props.weather.temp, props.unit),
+)
 </script>
 
 <template>
@@ -19,7 +34,7 @@ const emit = defineEmits(['select-card', 'click-detail'])
     <div class="weather-card__info">
       <h3>{{ props.weather.name }}</h3>
       <p class="weather-status">날씨 상태: {{ props.weather.status }}</p>
-      <p class="temperature">{{ props.weather.temp }}℃</p>
+      <p class="temperature">{{ displayTemperature }}{{ props.unitSymbol }}</p>
       <p v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </p>
