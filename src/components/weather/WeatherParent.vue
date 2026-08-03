@@ -1,14 +1,12 @@
 <script setup>
 import { computed, ref, watch, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
+import { weatherList } from '../../data/weatherData.js'
 import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
-const weatherList = [
-  { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
-  { id: 'city_02', name: '수원', temp: 24, status: '비' },
-  { id: 'city_03', name: '부산', temp: 26, status: '구름' },
-]
+const router = useRouter()
 
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
@@ -47,7 +45,12 @@ watchEffect(() => {
 })
 
 const showDetail = (weather) => {
-  window.alert(`${weather.name}의 현재 날씨는 [${weather.status}] 상태입니다.`)
+  router.push({
+    name: 'weather-detail',
+    params: {
+      cityId: weather.id,
+    },
+  })
 }
 </script>
 
