@@ -2,6 +2,7 @@
 import { computed, ref, watch, watchEffect } from 'vue'
 import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
+import WeatherCard from './WeatherCard.vue'
 
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -45,8 +46,8 @@ watchEffect(() => {
   console.log(`검색 결과: ${resultNames.length ? resultNames.join(', ') : '검색 결과 없음'}`)
 })
 
-const showDetail = (cityName, status) => {
-  window.alert(`${cityName}의 현재 날씨는 [${status}] 상태입니다.`)
+const showDetail = (weather) => {
+  window.alert(`${weather.name}의 현재 날씨는 [${weather.status}] 상태입니다.`)
 }
 </script>
 
@@ -59,25 +60,13 @@ const showDetail = (cityName, status) => {
     <BaseDashboardCard aria-labelledby="weather-list-title">
       <h2 id="weather-list-title">지역별 날씨</h2>
       <div v-if="filteredWeatherList.length" class="weather-grid">
-        <article
+        <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
-          class="weather-card"
-          tabindex="0"
-          @click="selectCity(weather)"
-          @keydown.enter="selectCity(weather)"
-        >
-          <h3>{{ weather.name }}</h3>
-          <p class="temperature">{{ weather.temp }}℃</p>
-          <p>날씨 상태: {{ weather.status }}</p>
-          <p v-if="weather.temp >= 25" class="temperature-label hot">
-            🔥 더움 (25도 이상)
-          </p>
-          <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
-          <button type="button" @click.stop="showDetail(weather.name, weather.status)">
-            상세보기
-          </button>
-        </article>
+          :weather="weather"
+          @select-card="selectCity"
+          @click-detail="showDetail"
+        />
       </div>
       <p v-else>검색 결과와 일치하는 도시가 없습니다.</p>
     </BaseDashboardCard>
