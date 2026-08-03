@@ -93,9 +93,9 @@ const showDetail = (weather) => {
 }
 
 .weather-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .selection-status {

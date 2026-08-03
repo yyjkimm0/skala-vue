@@ -16,13 +16,15 @@ const emit = defineEmits(['select-card', 'click-detail'])
     @click="emit('select-card', props.weather)"
     @keydown.enter="emit('select-card', props.weather)"
   >
-    <h3>{{ props.weather.name }}</h3>
-    <p class="temperature">{{ props.weather.temp }}℃</p>
-    <p>날씨 상태: {{ props.weather.status }}</p>
-    <p v-if="props.weather.temp >= 25" class="temperature-label hot">
-      🔥 더움 (25도 이상)
-    </p>
-    <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
+    <div class="weather-card__info">
+      <h3>{{ props.weather.name }}</h3>
+      <p class="weather-status">날씨 상태: {{ props.weather.status }}</p>
+      <p class="temperature">{{ props.weather.temp }}℃</p>
+      <p v-if="props.weather.temp >= 25" class="temperature-label hot">
+        🔥 더움 (25도 이상)
+      </p>
+      <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
+    </div>
     <button
       type="button"
       @click.stop="emit('click-detail', props.weather)"
@@ -35,12 +37,20 @@ const emit = defineEmits(['select-card', 'click-detail'])
 
 <style scoped>
 .weather-card {
-  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
   border: 1px solid #d6e0ed;
   border-radius: 14px;
   background: #ffffff;
   box-shadow: 0 6px 18px rgb(35 61 89 / 8%);
   cursor: pointer;
+}
+
+.weather-card__info {
+  min-width: 0;
 }
 
 .weather-card:focus-visible {
@@ -53,29 +63,41 @@ const emit = defineEmits(['select-card', 'click-detail'])
   font-size: 1.35rem;
 }
 
+.weather-status {
+  margin: 4px 0;
+}
+
 .temperature {
-  margin: 14px 0 8px;
+  margin: 4px 0;
   color: #163a63;
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .temperature-label {
+  display: inline-block;
+  margin: 6px 0 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
 .hot {
   color: #c2410c;
+  background: #ffedd5;
 }
 
 .cool {
   color: #2563eb;
+  background: #dbeafe;
 }
 
 .weather-card button {
-  width: 100%;
-  margin-top: 8px;
-  padding: 10px 14px;
+  width: auto;
+  flex-shrink: 0;
+  margin-top: 0;
+  padding: 8px 12px;
   border: 0;
   border-radius: 8px;
   color: #ffffff;
@@ -91,5 +113,16 @@ const emit = defineEmits(['select-card', 'click-detail'])
 .weather-card button:focus-visible {
   outline: 3px solid #93c5fd;
   outline-offset: 2px;
+}
+
+@media (max-width: 540px) {
+  .weather-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .weather-card button {
+    align-self: flex-start;
+  }
 }
 </style>
