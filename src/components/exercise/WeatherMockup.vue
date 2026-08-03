@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -7,8 +7,18 @@ const weatherList = [
   { id: 'city_03', name: '부산', temp: 26, status: '구름' },
 ]
 
-const cityInput = ref('')
+const searchQuery = ref('')
 const selectedCity = ref('')
+
+const filteredWeatherList = computed(() => {
+  const normalizedQuery = searchQuery.value.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return weatherList
+  }
+
+  return weatherList.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
+})
 
 const selectCity = (cityName) => {
   selectedCity.value = cityName
@@ -25,19 +35,25 @@ const showDetail = (cityName, status) => {
       <label for="city-search">도시 검색어</label>
       <input
         id="city-search"
-        :value="cityInput"
+        :value="searchQuery"
         type="text"
         placeholder="도시명을 입력하세요"
-        @input="cityInput = $event.target.value"
+        @input="searchQuery = $event.target.value"
       />
-      <p class="input-status">입력한 도시: {{ cityInput || '아직 입력하지 않았습니다.' }}</p>
+      <p class="input-status">
+        {{
+          searchQuery.trim()
+            ? `검색 중인 도시: ${searchQuery.trim()}`
+            : '검색어를 입력하지 않았습니다.'
+        }}
+      </p>
     </div>
 
     <section aria-labelledby="weather-list-title">
       <h2 id="weather-list-title">지역별 날씨</h2>
-      <div class="weather-grid">
+      <div v-if="filteredWeatherList.length" class="weather-grid">
         <article
-          v-for="weather in weatherList"
+          v-for="weather in filteredWeatherList"
           :key="weather.id"
           class="weather-card"
           tabindex="0"
@@ -56,6 +72,7 @@ const showDetail = (cityName, status) => {
           </button>
         </article>
       </div>
+      <p v-else>검색 결과와 일치하는 도시가 없습니다.</p>
     </section>
 
     <div class="selection-status" role="status" aria-live="polite">
