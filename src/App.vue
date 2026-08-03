@@ -6,7 +6,7 @@ import './assets/exercise.css'
 
 <template>
   <main class="app-container">
-    <h1>⛅ 과제 4: 라우터 적용</h1>
+    <h1>⛅ 과제 4: 라우터적용</h1>
 
     <nav class="app-navigation" aria-label="주요 메뉴">
       <div class="app-navigation__links">
@@ -25,31 +25,35 @@ import './assets/exercise.css'
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 9px 10px;
+  border: 1px solid #d6e0ed;
+  border-radius: 6px;
+  background: #ffffff;
 }
 
 .app-navigation__links {
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  gap: 14px;
 }
 
 .app-navigation a {
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 4px 1px;
+  border-bottom: 2px solid transparent;
   color: #526276;
   font-weight: 700;
   text-decoration: none;
 }
 
 .app-navigation a:hover {
-  color: #163a63;
-  background: #e8eef6;
+  color: #2563eb;
 }
 
 .app-navigation a.router-link-exact-active {
-  color: #ffffff;
-  background: #2563eb;
+  border-bottom-color: #2563eb;
+  color: #2563eb;
 }
 
 @media (max-width: 540px) {

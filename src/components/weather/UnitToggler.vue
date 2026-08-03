@@ -17,24 +17,25 @@ const configStore = useConfigStore()
 .unit-toggler {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   color: #526276;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
 .unit-toggler button {
-  padding: 8px 12px;
-  border: 1px solid #2563eb;
-  border-radius: 8px;
-  color: #2563eb;
+  padding: 4px 6px;
+  border: 1px solid #a9b9cc;
+  border-radius: 3px;
+  color: #526276;
   background: #ffffff;
   font-weight: 700;
   cursor: pointer;
 }
 
 .unit-toggler button:hover {
-  color: #ffffff;
-  background: #2563eb;
+  color: #163a63;
+  background: #f3f6fb;
 }
 
 .unit-toggler button:focus-visible {

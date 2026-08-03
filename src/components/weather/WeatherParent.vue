@@ -72,7 +72,7 @@ const showDetail = (weather) => {
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="weather-list-title">
-      <h2 id="weather-list-title">지역별 날씨</h2>
+      <h2 id="weather-list-title">🏙️ 지역별 날씨 현황</h2>
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
@@ -91,7 +91,7 @@ const showDetail = (weather) => {
       {{
         selectedCityInfo
           ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
-          : '검색 후 원하는 날씨 카드를 선택해 보세요.'
+          : '카드를 클릭하거나 검색해 보세요.'
       }}
     </div>
   </section>
@@ -100,26 +100,26 @@ const showDetail = (weather) => {
 <style scoped>
 .weather-mockup {
   display: grid;
-  gap: 28px;
+  gap: 12px;
 }
 
 #weather-list-title {
-  margin: 0 0 14px;
-  font-size: 1.3rem;
+  margin: 0 0 10px;
+  font-size: 1rem;
 }
 
 .weather-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .selection-status {
-  padding: 20px;
-  border: 1px solid #d6e0ed;
-  border-left: 5px solid #2563eb;
-  border-radius: 12px;
-  background: #ffffff;
+  padding: 10px 12px;
+  border: 1px solid #a7d7b7;
+  border-radius: 5px;
+  background: #ecfdf3;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 </style>

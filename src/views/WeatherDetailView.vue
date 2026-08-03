@@ -19,58 +19,69 @@ const displayTemperature = computed(() => {
 
   return convertTemperature(city.value.temp, configStore.unit)
 })
+
+const locationNames = {
+  city_01: '대한민국 서울특별시',
+  city_02: '대한민국 경기도 수원시',
+  city_03: '대한민국 부산광역시',
+}
 </script>
 
 <template>
   <section class="weather-detail">
-    <h1>지역별 날씨 상세 정보</h1>
+    <h1>📊 지역별 상세 기상 관측 정보</h1>
 
     <dl v-if="city" class="weather-detail__list">
       <div>
-        <dt>지역</dt>
-        <dd>{{ city.name }}</dd>
+        <dt>📍 지점 지역:</dt>
+        <dd>{{ locationNames[city.id] }}</dd>
       </div>
       <div>
-        <dt>날씨</dt>
-        <dd>{{ city.status }}</dd>
-      </div>
-      <div>
-        <dt>현재 기온</dt>
+        <dt>실시간 기온:</dt>
         <dd>{{ displayTemperature }}{{ configStore.unitSymbol }}</dd>
       </div>
       <div>
-        <dt>습도</dt>
+        <dt>기상 현황:</dt>
+        <dd>{{ city.status }}</dd>
+      </div>
+      <div>
+        <dt>대기 습도:</dt>
         <dd>{{ city.humidity }}%</dd>
       </div>
       <div>
-        <dt>풍속</dt>
+        <dt>현재 풍속:</dt>
         <dd>{{ city.windSpeed }}m/s</dd>
       </div>
     </dl>
 
     <p v-else>해당 도시 정보를 찾을 수 없습니다.</p>
 
-    <RouterLink class="back-link" to="/">메인 대시보드로 돌아가기</RouterLink>
+    <RouterLink class="back-link" to="/">← 메인 대시보드로 돌아가기</RouterLink>
   </section>
 </template>
 
 <style scoped>
 .weather-detail {
-  padding: 20px;
+  padding: 14px;
   border: 1px solid #d6e0ed;
-  border-radius: 12px;
+  border-radius: 6px;
   background: #ffffff;
 }
 
 .weather-detail h1 {
-  margin-top: 0;
+  margin: 0 0 12px;
   color: #163a63;
+  font-size: 1.05rem;
 }
 
 .weather-detail__list {
   display: grid;
-  gap: 12px;
-  margin: 0 0 24px;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 12px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  font-size: 0.8rem;
 }
 
 .weather-detail__list div {
@@ -87,7 +98,12 @@ const displayTemperature = computed(() => {
 }
 
 .back-link {
-  color: #2563eb;
+  display: inline-block;
+  padding: 6px 9px;
+  border-radius: 3px;
+  color: #ffffff;
+  background: #374151;
   font-weight: 700;
+  text-decoration: none;
 }
 </style>
