@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -8,7 +8,7 @@ const weatherList = [
 ]
 
 const searchQuery = ref('')
-const selectedCity = ref('')
+const selectedCityInfo = ref(null)
 
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
@@ -20,9 +20,15 @@ const filteredWeatherList = computed(() => {
   return weatherList.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
 })
 
-const selectCity = (cityName) => {
-  selectedCity.value = cityName
+const selectCity = (weather) => {
+  selectedCityInfo.value = weather
 }
+
+watch(selectedCityInfo, (newCity, oldCity) => {
+  console.log('[watch] 선택 도시 변경')
+  console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
+  console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
+})
 
 const showDetail = (cityName, status) => {
   window.alert(`${cityName}의 현재 날씨는 [${status}] 상태입니다.`)
@@ -57,8 +63,8 @@ const showDetail = (cityName, status) => {
           :key="weather.id"
           class="weather-card"
           tabindex="0"
-          @click="selectCity(weather.name)"
-          @keydown.enter="selectCity(weather.name)"
+          @click="selectCity(weather)"
+          @keydown.enter="selectCity(weather)"
         >
           <h3>{{ weather.name }}</h3>
           <p class="temperature">{{ weather.temp }}℃</p>
@@ -76,7 +82,11 @@ const showDetail = (cityName, status) => {
     </section>
 
     <div class="selection-status" role="status" aria-live="polite">
-      {{ selectedCity ? `${selectedCity}이 선택되었습니다.` : '카드를 클릭하거나 검색해 보세요.' }}
+      {{
+        selectedCityInfo
+          ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedCityInfo.temp}℃이고 날씨는 ${selectedCityInfo.status}입니다.`
+          : '검색 후 원하는 날씨 카드를 선택해 보세요.'
+      }}
     </div>
   </section>
 </template>
