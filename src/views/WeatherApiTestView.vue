@@ -38,19 +38,19 @@ onMounted(loadSeoulWeather)
       </div>
       <div>
         <dt>현재 기온</dt>
-        <dd>{{ weather.main.temp }}°C</dd>
+        <dd>{{ weather.temp }}°C</dd>
       </div>
       <div>
         <dt>날씨 설명</dt>
-        <dd>{{ weather.weather[0].description }}</dd>
+        <dd>{{ weather.status }}</dd>
       </div>
       <div>
         <dt>습도</dt>
-        <dd>{{ weather.main.humidity }}%</dd>
+        <dd>{{ weather.humidity }}%</dd>
       </div>
       <div>
         <dt>풍속</dt>
-        <dd>{{ weather.wind.speed }}m/s</dd>
+        <dd>{{ weather.windSpeed }}m/s</dd>
       </div>
     </dl>
   </section>

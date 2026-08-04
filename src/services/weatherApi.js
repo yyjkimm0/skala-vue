@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { mapOpenWeatherToWeather } from '../utils/weatherMapper.js'
 
 const openWeatherApi = axios.create({
   baseURL: 'https://api.openweathermap.org/data/2.5',
@@ -20,5 +21,8 @@ export const fetchCurrentWeather = async (cityName) => {
     },
   })
 
-  return response.data
+  return mapOpenWeatherToWeather(response.data, {
+    id: 'city_01',
+    name: '서울',
+  })
 }
