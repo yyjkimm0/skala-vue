@@ -25,8 +25,8 @@ export const labs = [
   },
   {
     id: 'fifth',
-    label: '다섯 번째 실습',
-    title: '5일차',
+    label: '다섯 번째 과제',
+    title: '과제 5: 스토어적용',
     path: '/fifth',
   },
   {

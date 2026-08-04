@@ -3,24 +3,65 @@ import { RouterLink } from 'vue-router'
 </script>
 
 <template>
-  <section class="unavailable-view">
-    <h2>5일차 과제는 아직 복원되지 않았습니다.</h2>
-    <p>Git 이력에서 해당 시점의 결과물을 복원할 예정입니다.</p>
-    <RouterLink :to="{ name: 'sixth-weather-home' }">최신 과제로 이동</RouterLink>
+  <section class="not-found-view">
+    <div class="not-found-card">
+      <p class="not-found-icon" aria-hidden="true">☀️ ❓</p>
+      <h2>페이지를 찾을 수 없습니다.</h2>
+      <p>요청한 주소가 존재하지 않거나 아직 개발되지 않았습니다.</p>
+      <RouterLink
+        class="back-link"
+        :to="{ name: 'fifth-weather-home' }"
+      >
+        날씨 메인으로 이동
+      </RouterLink>
+    </div>
   </section>
 </template>
 
 <style scoped>
-.unavailable-view {
-  padding: 20px;
-  border: 1px solid #d6e0ed;
+.not-found-view {
+  padding: 28px 14px;
   border-radius: 6px;
-  background: #ffffff;
+  background: #eef2f7;
+  text-align: center;
 }
 
-.unavailable-view h2 {
-  margin-top: 0;
+.not-found-card {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 18px;
+  border: 1px solid #d6e0ed;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.not-found-icon {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+h2 {
+  margin: 0 0 8px;
   color: #163a63;
   font-size: 1rem;
+}
+
+.not-found-card > p:not(.not-found-icon) {
+  margin: 0;
+  color: #526276;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #fff;
+  background: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
 }
 </style>
