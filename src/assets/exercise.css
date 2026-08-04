@@ -15,6 +15,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  font-size: 14px;
 }
 
 button,
@@ -23,20 +24,20 @@ input {
 }
 
 .app-container {
-  width: min(960px, calc(100% - 32px));
+  width: min(440px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 48px 0;
+  padding: 16px 0 28px;
 }
 
 .app-container > h1 {
-  margin: 0 0 28px;
+  margin: 0 0 14px;
   color: #163a63;
-  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  font-size: 1.35rem;
 }
 
 @media (max-width: 540px) {
   .app-container {
-    width: min(100% - 24px, 960px);
-    padding: 28px 0;
+    width: calc(100% - 20px);
+    padding: 12px 0 20px;
   }
 }
