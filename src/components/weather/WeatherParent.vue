@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { weatherList } from '../../data/weatherData.js'
+import { fetchCurrentWeather } from '../../services/weatherApi.js'
 import { useConfigStore } from '../../stores/configStore.js'
 import { convertTemperature } from '../../utils/temperature.js'
 import BaseDashboardCard from './BaseDashboardCard.vue'
@@ -13,15 +14,20 @@ const configStore = useConfigStore()
 
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
+const weatherItems = ref([...weatherList])
+const isLoadingWeather = ref(false)
+const weatherErrorMessage = ref('')
 
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
 
   if (!normalizedQuery) {
-    return weatherList
+    return weatherItems.value
   }
 
-  return weatherList.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
+  return weatherItems.value.filter((weather) =>
+    weather.name.toLowerCase().includes(normalizedQuery),
+  )
 })
 
 const selectedTemperature = computed(() => {
@@ -39,6 +45,26 @@ const selectCity = (weather) => {
 const updateSearchQuery = (value) => {
   searchQuery.value = value
 }
+
+const loadSeoulWeather = async () => {
+  isLoadingWeather.value = true
+  weatherErrorMessage.value = ''
+
+  try {
+    const seoulWeather = await fetchCurrentWeather('Seoul')
+
+    weatherItems.value = weatherItems.value.map((weather) =>
+      weather.id === 'city_01' ? seoulWeather : weather,
+    )
+  } catch {
+    weatherErrorMessage.value =
+      '서울 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.'
+  } finally {
+    isLoadingWeather.value = false
+  }
+}
+
+onMounted(loadSeoulWeather)
 
 watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
@@ -73,6 +99,12 @@ const showDetail = (weather) => {
 
     <BaseDashboardCard aria-labelledby="weather-list-title">
       <h2 id="weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <p v-if="isLoadingWeather" class="weather-load-status" role="status">
+        서울 실시간 날씨를 불러오는 중입니다.
+      </p>
+      <p v-else-if="weatherErrorMessage" class="weather-load-status" role="alert">
+        {{ weatherErrorMessage }}
+      </p>
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
@@ -106,6 +138,11 @@ const showDetail = (weather) => {
 #weather-list-title {
   margin: 0 0 10px;
   font-size: 1rem;
+}
+
+.weather-load-status {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
 }
 
 .weather-grid {
