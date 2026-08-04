@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/WeatherDetailView.vue'),
     },
     {
+      path: '/api-test',
+      name: 'weather-api-test',
+      component: () => import('../views/WeatherApiTestView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/NotFoundView.vue'),
