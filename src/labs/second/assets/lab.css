@@ -1,0 +1,169 @@
+.second-lab {
+  width: 100%;
+  max-width: 460px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.second-lab .weather-mockup {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.second-lab .search-panel {
+  padding: 12px;
+  border: 1px solid #d6e0ed;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.second-lab .search-panel label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.second-lab .search-panel input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid #a9b9cc;
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+
+.second-lab .search-panel input:focus {
+  border-color: #2563eb;
+  outline: 3px solid #dbeafe;
+}
+
+.second-lab .input-status {
+  margin: 6px 0 0;
+  color: #526276;
+  font-size: 0.75rem;
+}
+
+.second-lab .weather-panel {
+  padding: 12px;
+  border: 1px solid #d6e0ed;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.second-lab #second-weather-list-title {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.second-lab .weather-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.second-lab .empty-state {
+  margin: 0;
+  color: #526276;
+  font-size: 0.78rem;
+}
+
+.second-lab .weather-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #dbe3ec;
+  border-radius: 5px;
+  background: #ffffff;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.second-lab .weather-card:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.second-lab .weather-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.second-lab .weather-card__name {
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.second-lab .temperature {
+  margin: 0 0 5px;
+  color: #163a63;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.second-lab .temperature-label {
+  display: inline-block;
+  margin: 0;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.second-lab .hot {
+  color: #ffffff;
+  background: #ff6b6b;
+}
+
+.second-lab .cool {
+  color: #ffffff;
+  background: #38bdf8;
+}
+
+.second-lab .weather-card button {
+  width: auto;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 5px 8px;
+  border: 1px solid #9ca3af;
+  border-radius: 2px;
+  color: #374151;
+  background: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.second-lab .weather-card button:hover {
+  background: #f3f4f6;
+}
+
+.second-lab .weather-card button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.second-lab .selection-status {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  color: #3f8f45;
+  background: #edf9ed;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 340px) {
+  .second-lab .weather-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}

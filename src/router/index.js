@@ -1,32 +1,57 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { fifthRoutes } from '../labs/fifth/router/index.js'
+import { firstRoutes } from '../labs/first/router/index.js'
+import { fourthRoutes } from '../labs/fourth/router/index.js'
+import { secondRoutes } from '../labs/second/router/index.js'
+import { sixthRoutes } from '../labs/sixth/router/index.js'
+import { thirdRoutes } from '../labs/third/router/index.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'weather-home',
-      component: () => import('../views/WeatherHomeView.vue'),
+      redirect: '/sixth',
     },
     {
-      path: '/about',
-      name: 'weather-about',
-      component: () => import('../views/WeatherAboutView.vue'),
+      path: '/first',
+      component: () => import('../labs/first/App.vue'),
+      meta: { labId: 'first' },
+      children: firstRoutes,
     },
     {
-      path: '/weather/:cityId',
-      name: 'weather-detail',
-      component: () => import('../views/WeatherDetailView.vue'),
+      path: '/second',
+      component: () => import('../labs/second/App.vue'),
+      meta: { labId: 'second' },
+      children: secondRoutes,
     },
     {
-      path: '/api-test',
-      name: 'weather-api-test',
-      component: () => import('../views/WeatherApiTestView.vue'),
+      path: '/third',
+      component: () => import('../labs/third/App.vue'),
+      meta: { labId: 'third' },
+      children: thirdRoutes,
+    },
+    {
+      path: '/fourth',
+      component: () => import('../labs/fourth/App.vue'),
+      meta: { labId: 'fourth' },
+      children: fourthRoutes,
+    },
+    {
+      path: '/fifth',
+      component: () => import('../labs/fifth/App.vue'),
+      meta: { labId: 'fifth' },
+      children: fifthRoutes,
+    },
+    {
+      path: '/sixth',
+      component: () => import('../labs/sixth/App.vue'),
+      meta: { labId: 'sixth' },
+      children: sixthRoutes,
     },
     {
       path: '/:pathMatch(.*)*',
-      name: 'not-found',
-      component: () => import('../views/NotFoundView.vue'),
+      redirect: '/sixth',
     },
   ],
 })

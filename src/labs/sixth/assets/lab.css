@@ -1,0 +1,53 @@
+button,
+input {
+  font: inherit;
+}
+
+.sixth-lab {
+  width: 100%;
+  max-width: 460px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.sixth-lab .app-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #d6e0ed;
+  background: #fff;
+}
+
+.sixth-lab .app-navigation__links {
+  display: flex;
+  min-width: 0;
+}
+
+.sixth-lab .app-navigation a {
+  padding: 7px 9px 6px;
+  border-bottom: 2px solid transparent;
+  color: #526276;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sixth-lab .app-navigation a:hover {
+  color: #163a63;
+  background: #eef4fb;
+}
+
+.sixth-lab .app-navigation a.router-link-exact-active {
+  border-bottom-color: #2563eb;
+  color: #1d4ed8;
+}
+
+@media (max-width: 340px) {
+  .sixth-lab .app-navigation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
