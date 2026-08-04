@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { findWeatherCityById } from '../data/weatherCities.js'
 import { weatherList } from '../data/weatherData.js'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
@@ -32,28 +33,28 @@ const locationNames = {
 const loadWeatherDetail = async () => {
   const loadId = ++latestLoadId
   const cityId = route.params.cityId
+  const cityConfig = findWeatherCityById(cityId)
   const mockCity = weatherList.find((weather) => weather.id === cityId)
 
   city.value = null
-  isLoading.value = cityId === 'city_01'
+  isLoading.value = Boolean(cityConfig)
   errorMessage.value = ''
   isUsingMockFallback.value = false
 
   try {
-    if (cityId === 'city_01') {
-      const seoulWeather = await fetchCurrentWeather('Seoul')
+    if (!cityConfig) {
+      return
+    }
 
-      if (loadId === latestLoadId) {
-        city.value = seoulWeather
-      }
-    } else {
-      city.value = mockCity ?? null
+    const currentWeather = await fetchCurrentWeather(cityConfig)
+
+    if (loadId === latestLoadId) {
+      city.value = currentWeather
     }
   } catch {
     if (loadId === latestLoadId) {
       city.value = mockCity ?? null
-      errorMessage.value =
-        '서울 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.'
+      errorMessage.value = `${cityConfig.name} 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
       isUsingMockFallback.value = true
     }
   } finally {
@@ -70,7 +71,7 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
   <section class="weather-detail">
     <h1>📊 지역별 상세 기상 관측 정보</h1>
 
-    <p v-if="isLoading" role="status">서울 상세 날씨를 불러오는 중입니다.</p>
+    <p v-if="isLoading" role="status">상세 날씨를 불러오는 중입니다.</p>
 
     <template v-else>
       <p v-if="isUsingMockFallback" class="weather-detail__notice" role="alert">

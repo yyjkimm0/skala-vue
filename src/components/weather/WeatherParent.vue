@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
+import { weatherCities } from '../../data/weatherCities.js'
 import { weatherList } from '../../data/weatherData.js'
 import { fetchCurrentWeather } from '../../services/weatherApi.js'
 import { useConfigStore } from '../../stores/configStore.js'
@@ -16,7 +17,13 @@ const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 const weatherItems = ref([...weatherList])
 const isLoadingWeather = ref(false)
-const weatherErrorMessage = ref('')
+const failedCityIds = ref([])
+
+const failedCityNames = computed(() =>
+  weatherCities
+    .filter((city) => failedCityIds.value.includes(city.id))
+    .map((city) => city.name),
+)
 
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
@@ -46,25 +53,36 @@ const updateSearchQuery = (value) => {
   searchQuery.value = value
 }
 
-const loadSeoulWeather = async () => {
+const loadWeather = async () => {
   isLoadingWeather.value = true
-  weatherErrorMessage.value = ''
+  failedCityIds.value = []
 
   try {
-    const seoulWeather = await fetchCurrentWeather('Seoul')
-
-    weatherItems.value = weatherItems.value.map((weather) =>
-      weather.id === 'city_01' ? seoulWeather : weather,
+    const results = await Promise.allSettled(
+      weatherCities.map((cityConfig) => fetchCurrentWeather(cityConfig)),
     )
-  } catch {
-    weatherErrorMessage.value =
-      '서울 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.'
+    const mockWeatherById = new Map(weatherList.map((weather) => [weather.id, weather]))
+
+    weatherItems.value = results.map((result, index) =>
+      result.status === 'fulfilled'
+        ? result.value
+        : mockWeatherById.get(weatherCities[index].id),
+    )
+
+    failedCityIds.value = results.flatMap((result, index) =>
+      result.status === 'rejected' ? [weatherCities[index].id] : [],
+    )
+
+    if (selectedCityInfo.value) {
+      selectedCityInfo.value =
+        weatherItems.value.find((weather) => weather.id === selectedCityInfo.value.id) ?? null
+    }
   } finally {
     isLoadingWeather.value = false
   }
 }
 
-onMounted(loadSeoulWeather)
+onMounted(loadWeather)
 
 watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
@@ -100,10 +118,11 @@ const showDetail = (weather) => {
     <BaseDashboardCard aria-labelledby="weather-list-title">
       <h2 id="weather-list-title">🏙️ 지역별 날씨 현황</h2>
       <p v-if="isLoadingWeather" class="weather-load-status" role="status">
-        서울 실시간 날씨를 불러오는 중입니다.
+        실시간 날씨를 불러오는 중입니다.
       </p>
-      <p v-else-if="weatherErrorMessage" class="weather-load-status" role="alert">
-        {{ weatherErrorMessage }}
+      <p v-else-if="failedCityNames.length" class="weather-load-status" role="alert">
+        {{ failedCityNames.join(', ') }}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고
+        있습니다.
       </p>
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
