@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import UnitToggler from './components/weather/UnitToggler.vue'
-import './assets/exercise.css'
+import './assets/lab.css'
 </script>
 
 <template>

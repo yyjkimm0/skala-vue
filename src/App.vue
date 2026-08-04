@@ -24,15 +24,19 @@ const changeLab = async (labId) => {
 
 <template>
   <main class="app-container">
-    <header class="lab-header">
-      <h1>⛅ {{ currentLab.title }}</h1>
-      <LabSelector
-        :labs="labs"
-        :model-value="currentLabId"
-        @update:model-value="changeLab"
-      />
-    </header>
+    <section class="lab-frame">
+      <header class="lab-header">
+        <h1>⛅ {{ currentLab.title }}</h1>
+        <LabSelector
+          :labs="labs"
+          :model-value="currentLabId"
+          @update:model-value="changeLab"
+        />
+      </header>
 
-    <RouterView />
+      <div class="lab-content">
+        <RouterView />
+      </div>
+    </section>
   </main>
 </template>

@@ -30,19 +30,44 @@ const handleChange = (event) => {
 
 <style scoped>
 .lab-selector {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  flex: 0 0 auto;
+  gap: 6px;
   font-size: 0.8rem;
   font-weight: 700;
 }
 
 .lab-selector select {
+  width: auto;
+  min-width: 112px;
+  max-width: 140px;
   padding: 6px 8px;
   border: 1px solid #9ca3af;
   border-radius: 4px;
   color: #1f2937;
   background: #ffffff;
   font: inherit;
+}
+
+@media (max-width: 460px) {
+  .lab-selector__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@media (max-width: 340px) {
+  .lab-selector select {
+    width: 100%;
+    max-width: none;
+  }
 }
 </style>

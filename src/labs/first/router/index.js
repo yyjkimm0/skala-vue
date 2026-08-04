@@ -1,12 +1,11 @@
 export const firstRoutes = [
   {
     path: '',
-    name: 'first-unavailable',
-    component: () => import('../views/NotFoundView.vue'),
+    name: 'first-weather-home',
+    component: () => import('../views/WeatherHomeView.vue'),
   },
   {
     path: ':pathMatch(.*)*',
-    name: 'first-not-found',
-    component: () => import('../views/NotFoundView.vue'),
+    redirect: { name: 'first-weather-home' },
   },
 ]
