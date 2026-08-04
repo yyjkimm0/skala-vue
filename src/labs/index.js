@@ -8,7 +8,7 @@ export const labs = [
   {
     id: 'second',
     label: '두 번째 실습',
-    title: '2일차',
+    title: '과제 2: 날씨 (컴포지션)',
     path: '/second',
   },
   {

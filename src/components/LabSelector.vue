@@ -19,7 +19,6 @@ const handleChange = (event) => {
 
 <template>
   <label class="lab-selector">
-    <span class="lab-selector__label">과제 선택</span>
     <select :value="modelValue" @change="handleChange">
       <option v-for="lab in labs" :key="lab.id" :value="lab.id">
         {{ lab.label }}

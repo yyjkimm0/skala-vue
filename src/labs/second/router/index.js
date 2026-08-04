@@ -1,12 +1,11 @@
 export const secondRoutes = [
   {
     path: '',
-    name: 'second-unavailable',
-    component: () => import('../views/NotFoundView.vue'),
+    name: 'second-weather-home',
+    component: () => import('../views/WeatherHomeView.vue'),
   },
   {
     path: ':pathMatch(.*)*',
-    name: 'second-not-found',
-    component: () => import('../views/NotFoundView.vue'),
+    redirect: { name: 'second-weather-home' },
   },
 ]
