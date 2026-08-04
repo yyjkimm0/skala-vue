@@ -19,8 +19,8 @@ export const labs = [
   },
   {
     id: 'fourth',
-    label: '네 번째 실습',
-    title: '4일차',
+    label: '네 번째 과제',
+    title: '과제 4: 라우터적용',
     path: '/fourth',
   },
   {

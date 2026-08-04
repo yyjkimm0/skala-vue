@@ -1,9 +1,15 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
+import './assets/lab.css'
 </script>
 
 <template>
-  <section class="lab-app">
+  <section class="fourth-lab">
+    <nav class="app-navigation" aria-label="네 번째 과제 메뉴">
+      <RouterLink :to="{ name: 'fourth-weather-home' }">날씨 대시보드</RouterLink>
+      <RouterLink :to="{ name: 'fourth-weather-about' }">서비스 소개</RouterLink>
+    </nav>
+
     <RouterView />
   </section>
 </template>
