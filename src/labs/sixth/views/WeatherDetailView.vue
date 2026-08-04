@@ -104,7 +104,9 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
       <p v-else>해당 도시 정보를 찾을 수 없습니다.</p>
     </template>
 
-    <RouterLink class="back-link" to="/">← 메인 대시보드로 돌아가기</RouterLink>
+    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
+      ← 메인 대시보드로 돌아가기
+    </RouterLink>
   </section>
 </template>
 

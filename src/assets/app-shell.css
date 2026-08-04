@@ -19,7 +19,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -29,8 +30,16 @@ input {
   padding: 16px 0 28px;
 }
 
-.app-container > h1 {
-  margin: 0 0 14px;
+.lab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.lab-header h1 {
+  margin: 0;
   color: #163a63;
   font-size: 1.35rem;
 }
@@ -39,5 +48,10 @@ input {
   .app-container {
     width: calc(100% - 20px);
     padding: 12px 0 20px;
+  }
+
+  .lab-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

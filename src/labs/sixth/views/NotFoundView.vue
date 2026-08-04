@@ -11,7 +11,9 @@ import { RouterLink } from 'vue-router'
 
       <p>요청하신 주소가 존재하지 않거나,<br />아직 개발되지 않았습니다.</p>
 
-      <RouterLink class="home-link" to="/">날씨 메인으로 이동</RouterLink>
+      <RouterLink class="home-link" :to="{ name: 'sixth-weather-home' }">
+        날씨 메인으로 이동
+      </RouterLink>
     </div>
   </section>
 </template>

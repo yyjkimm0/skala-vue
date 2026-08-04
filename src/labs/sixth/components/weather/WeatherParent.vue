@@ -101,7 +101,7 @@ watchEffect(() => {
 
 const showDetail = (weather) => {
   router.push({
-    name: 'weather-detail',
+    name: 'sixth-weather-detail',
     params: {
       cityId: weather.id,
     },

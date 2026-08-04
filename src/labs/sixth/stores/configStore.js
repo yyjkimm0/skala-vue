@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useConfigStore = defineStore('config', {
+export const useConfigStore = defineStore('sixth-config', {
   state: () => ({
     unit: 'celsius',
   }),

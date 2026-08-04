@@ -16,7 +16,9 @@ import { RouterLink } from 'vue-router'
 
     <p>화면에 표시되는 날씨 정보는 외부 API가 아닌 고정 Mock Data입니다.</p>
 
-    <RouterLink class="back-link" to="/">대시보드 홈으로 이동</RouterLink>
+    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
+      대시보드 홈으로 이동
+    </RouterLink>
   </section>
 </template>
 
