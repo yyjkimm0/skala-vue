@@ -1,12 +1,11 @@
 export const thirdRoutes = [
   {
     path: '',
-    name: 'third-unavailable',
-    component: () => import('../views/NotFoundView.vue'),
+    name: 'third-weather-home',
+    component: () => import('../views/WeatherHomeView.vue'),
   },
   {
     path: ':pathMatch(.*)*',
-    name: 'third-not-found',
-    component: () => import('../views/NotFoundView.vue'),
+    redirect: { name: 'third-weather-home' },
   },
 ]

@@ -13,8 +13,8 @@ export const labs = [
   },
   {
     id: 'third',
-    label: '세 번째 실습',
-    title: '3일차',
+    label: '세 번째 과제',
+    title: '과제 3: 날씨 (컴포넌트)',
     path: '/third',
   },
   {
