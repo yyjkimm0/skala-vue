@@ -14,40 +14,46 @@ const handleInput = (event) => {
 </script>
 
 <template>
-  <h2>🔍 도시 검색</h2>
-  <label for="city-search">도시 이름</label>
-  <input
-    id="city-search"
-    :value="props.searchQuery"
-    type="text"
-    placeholder="검색할 도시 이름 입력"
-    @input="handleInput"
-  />
-  <p class="input-status">
-    {{
-      `검색 중인 도시: ${props.searchQuery.trim()}`
-    }}
-  </p>
+  <div class="search-bar">
+    <label for="sixth-city-search">🔍 도시 검색</label>
+    <input
+      id="sixth-city-search"
+      type="text"
+      :value="props.searchQuery"
+      placeholder="도시명을 입력하세요"
+      @input="handleInput"
+    />
+    <p class="input-status">
+      {{
+        props.searchQuery.trim()
+          ? `검색 중인 도시: ${props.searchQuery.trim()}`
+          : '검색어를 입력하지 않았습니다.'
+      }}
+    </p>
+  </div>
 </template>
 
 <style scoped>
-h2 {
-  margin: 0 0 10px;
-  font-size: 1rem;
+.search-bar {
+  display: grid;
+  gap: 7px;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-size: 0.8rem;
+  color: #334155;
+  font-size: 0.88rem;
   font-weight: 700;
 }
 
 input {
   width: 100%;
-  padding: 7px 9px;
-  border: 1px solid #a9b9cc;
-  border-radius: 4px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font: inherit;
 }
 
 input:focus {
@@ -56,8 +62,8 @@ input:focus {
 }
 
 .input-status {
-  margin: 7px 0 0;
-  color: #526276;
-  font-size: 0.8rem;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.75rem;
 }
 </style>

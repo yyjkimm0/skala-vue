@@ -22,26 +22,44 @@ const emit = defineEmits(['select-card', 'click-detail'])
 const displayTemperature = computed(() =>
   convertTemperature(props.weather.temp, props.unit),
 )
+
+const selectCard = () => {
+  emit('select-card', props.weather)
+}
+
+const clickDetail = () => {
+  emit('click-detail', props.weather)
+}
 </script>
 
 <template>
   <article
     class="weather-card"
     tabindex="0"
-    @click="emit('select-card', props.weather)"
-    @keydown.enter="emit('select-card', props.weather)"
+    @click="selectCard"
+    @keydown.enter="selectCard"
   >
     <div class="weather-card__info">
-      <h3>{{ props.weather.name }} <span>({{ props.weather.status }})</span></h3>
-      <p class="temperature">현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}</p>
-      <p v-if="props.weather.temp >= 25" class="temperature-label hot">
-        🔥 더움 (25도 이상)
+      <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
+      <p class="weather-card__temperature">
+        현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
-      <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
+      <span
+        v-if="props.weather.temp >= 25"
+        class="temperature-label hot"
+      >
+        🔥 더움 (25도 이상)
+      </span>
+      <span
+        v-else
+        class="temperature-label cool"
+      >
+        ❄️ 선선함 (25도 미만)
+      </span>
     </div>
     <button
       type="button"
-      @click.stop="emit('click-detail', props.weather)"
+      @click.stop="clickDetail"
       @keydown.enter.stop
     >
       상세보기
@@ -55,91 +73,83 @@ const displayTemperature = computed(() =>
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid #d6e0ed;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid #dbe4ef;
   border-radius: 5px;
-  background: #ffffff;
-  box-shadow: 0 2px 7px rgb(35 61 89 / 7%);
+  background: #f8fafc;
   cursor: pointer;
+}
+
+.weather-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 .weather-card__info {
   min-width: 0;
 }
 
-.weather-card:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 3px;
-}
-
-.weather-card h3 {
+h3,
+p {
   margin: 0;
-  font-size: 0.95rem;
 }
 
-.weather-card h3 span {
-  color: #526276;
+h3 {
+  color: #1e293b;
+  font-size: 0.88rem;
+}
+
+.weather-card__temperature {
+  margin-top: 3px;
+  color: #475569;
   font-size: 0.78rem;
-  font-weight: 500;
-}
-
-.temperature {
-  margin: 4px 0 0;
-  color: #163a63;
-  font-size: 0.8rem;
-  font-weight: 700;
 }
 
 .temperature-label {
   display: inline-block;
-  margin: 5px 0 0;
+  margin-top: 5px;
   padding: 2px 6px;
   border-radius: 3px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
 }
 
 .hot {
-  color: #c2410c;
-  background: #ffedd5;
+  color: #fff;
+  background: #ff6b6b;
 }
 
 .cool {
-  color: #2563eb;
-  background: #dbeafe;
+  color: #fff;
+  background: #38bdf8;
 }
 
-.weather-card button {
-  width: auto;
-  flex-shrink: 0;
-  margin-top: 0;
+button {
+  flex: 0 0 auto;
   padding: 5px 8px;
   border: 1px solid #9ca3af;
-  border-radius: 3px;
+  border-radius: 2px;
   color: #374151;
-  background: #ffffff;
+  background: #fff;
+  font: inherit;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
 }
 
-.weather-card button:hover {
+button:hover {
   background: #f3f4f6;
 }
 
-.weather-card button:focus-visible {
+button:focus-visible {
   outline: 3px solid #93c5fd;
   outline-offset: 2px;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 340px) {
   .weather-card {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .weather-card button {
-    align-self: flex-start;
+    flex-wrap: wrap;
   }
 }
 </style>

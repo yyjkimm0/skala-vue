@@ -69,9 +69,15 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 
 <template>
   <section class="weather-detail">
-    <h1>📊 지역별 상세 기상 관측 정보</h1>
+    <h2>📊 지역별 상세 기상 관측 정보</h2>
 
-    <p v-if="isLoading" role="status">상세 날씨를 불러오는 중입니다.</p>
+    <p
+      v-if="isLoading"
+      class="weather-detail__loading"
+      role="status"
+    >
+      상세 날씨를 불러오는 중입니다.
+    </p>
 
     <template v-else>
       <p v-if="isUsingMockFallback" class="weather-detail__notice" role="alert">
@@ -101,10 +107,18 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
         </div>
       </dl>
 
-      <p v-else>해당 도시 정보를 찾을 수 없습니다.</p>
+      <p
+        v-else
+        class="missing-city"
+      >
+        해당 도시 정보를 찾을 수 없습니다.
+      </p>
     </template>
 
-    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
+    <RouterLink
+      class="back-link"
+      :to="{ name: 'sixth-weather-home' }"
+    >
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>
@@ -115,49 +129,71 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
   padding: 14px;
   border: 1px solid #d6e0ed;
   border-radius: 6px;
-  background: #ffffff;
+  background: #fff;
 }
 
-.weather-detail h1 {
+h2 {
   margin: 0 0 12px;
   color: #163a63;
-  font-size: 1.05rem;
+  font-size: 1rem;
+}
+
+.weather-detail__loading,
+.weather-detail__notice {
+  margin: 0 0 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+}
+
+.weather-detail__loading {
+  color: #1e40af;
+  background: #eff6ff;
 }
 
 .weather-detail__notice {
-  margin: 0 0 12px;
-  font-size: 0.8rem;
+  color: #92400e;
+  background: #fffbeb;
 }
 
 .weather-detail__list {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   margin: 0 0 12px;
-  padding: 12px;
-  border-radius: 4px;
-  background: #f3f4f6;
-  font-size: 0.8rem;
+  padding: 10px;
+  border-radius: 5px;
+  background: #f1f5f9;
 }
 
 .weather-detail__list div {
-  display: flex;
+  display: grid;
+  grid-template-columns: 96px 1fr;
   gap: 8px;
+  min-width: 0;
+  font-size: 0.78rem;
 }
 
-.weather-detail__list dt {
+dt {
   font-weight: 700;
 }
 
-.weather-detail__list dd {
+dd {
   margin: 0;
+}
+
+.missing-city {
+  margin: 0 0 12px;
+  color: #526276;
+  font-size: 0.78rem;
 }
 
 .back-link {
   display: inline-block;
   padding: 6px 9px;
-  border-radius: 3px;
-  color: #ffffff;
+  border-radius: 4px;
+  color: #fff;
   background: #374151;
+  font-size: 0.74rem;
   font-weight: 700;
   text-decoration: none;
 }

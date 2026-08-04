@@ -110,21 +110,35 @@ const showDetail = (weather) => {
 </script>
 
 <template>
-  <section class="weather-mockup">
-    <BaseDashboardCard class="search-panel">
-      <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
+  <div class="weather-mockup">
+    <BaseDashboardCard>
+      <SearchBar
+        :search-query="searchQuery"
+        @update-query="updateSearchQuery"
+      />
     </BaseDashboardCard>
 
-    <BaseDashboardCard aria-labelledby="weather-list-title">
-      <h2 id="weather-list-title">🏙️ 지역별 날씨 현황</h2>
-      <p v-if="isLoadingWeather" class="weather-load-status" role="status">
+    <BaseDashboardCard aria-labelledby="sixth-weather-list-title">
+      <h2 id="sixth-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <p
+        v-if="isLoadingWeather"
+        class="weather-load-status weather-load-status--loading"
+        role="status"
+      >
         실시간 날씨를 불러오는 중입니다.
       </p>
-      <p v-else-if="failedCityNames.length" class="weather-load-status" role="alert">
+      <p
+        v-else-if="failedCityNames.length"
+        class="weather-load-status weather-load-status--fallback"
+        role="alert"
+      >
         {{ failedCityNames.join(', ') }}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고
         있습니다.
       </p>
-      <div v-if="filteredWeatherList.length" class="weather-grid">
+      <div
+        v-if="filteredWeatherList.length"
+        class="weather-grid"
+      >
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
@@ -135,7 +149,12 @@ const showDetail = (weather) => {
           @click-detail="showDetail"
         />
       </div>
-      <p v-else>검색 결과와 일치하는 도시가 없습니다.</p>
+      <p
+        v-else
+        class="empty-state"
+      >
+        검색 결과와 일치하는 도시가 없습니다.
+      </p>
     </BaseDashboardCard>
 
     <div class="selection-status" role="status" aria-live="polite">
@@ -145,37 +164,63 @@ const showDetail = (weather) => {
           : '카드를 클릭하거나 검색해 보세요.'
       }}
     </div>
-  </section>
+  </div>
 </template>
 
 <style scoped>
 .weather-mockup {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  min-width: 0;
 }
 
-#weather-list-title {
-  margin: 0 0 10px;
-  font-size: 1rem;
+h2 {
+  margin: 0 0 8px;
+  color: #1e293b;
+  font-size: 0.9rem;
 }
 
 .weather-load-status {
-  margin: 0 0 10px;
-  font-size: 0.78rem;
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.weather-load-status--loading {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+.weather-load-status--fallback {
+  color: #92400e;
+  background: #fffbeb;
 }
 
 .weather-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
+}
+
+.empty-state {
+  margin: 0;
+  padding: 12px;
+  border-radius: 5px;
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 0.78rem;
+  text-align: center;
 }
 
 .selection-status {
-  padding: 10px 12px;
-  border: 1px solid #a7d7b7;
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid #bbf7d0;
   border-radius: 5px;
-  background: #ecfdf3;
-  font-size: 0.78rem;
-  font-weight: 700;
+  color: #166534;
+  background: #f0fdf4;
+  font-size: 0.76rem;
 }
 </style>

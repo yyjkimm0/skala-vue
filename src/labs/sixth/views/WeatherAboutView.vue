@@ -4,20 +4,25 @@ import { RouterLink } from 'vue-router'
 
 <template>
   <section class="about-view">
-    <h1>ℹ️ 서비스 소개</h1>
-    <p>본 앱은 Vue 3 및 Vue Router 기반으로 제작된 실습용 기상 관측 대시보드 시스템입니다.</p>
+    <h2>ℹ️ 서비스 소개</h2>
+    <p>이 앱은 Vue 3, Vue Router와 Pinia로 만든 실시간 날씨 대시보드입니다.</p>
 
+    <h3>현재 구현된 기능</h3>
     <ul>
-      <li>components/weather 또는 components/exercise 폴더 내부의 독립 부품 연동</li>
-      <li>클라이언트 사이드 라우팅을 통한 새로고침 없는 화면 전환</li>
-      <li>URL 경로와 도시 ID를 활용한 지역별 상세 기상 정보 표시</li>
-      <li>Pinia를 활용한 섭씨·화씨 단위 상태 공유</li>
+      <li>도시 검색과 날씨 카드 선택</li>
+      <li>Vue Router 기반 상세 페이지 이동</li>
+      <li>Pinia 기반 섭씨·화씨 단위 상태 공유</li>
+      <li>Axios와 OpenWeather를 이용한 실시간 날씨 조회</li>
+      <li>API 실패 도시의 Mock Data fallback</li>
     </ul>
 
-    <p>화면에 표시되는 날씨 정보는 외부 API가 아닌 고정 Mock Data입니다.</p>
+    <p>실시간 요청에 실패한 도시만 기존 Mock Data로 안전하게 표시합니다.</p>
 
-    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
-      대시보드 홈으로 이동
+    <RouterLink
+      class="back-link"
+      :to="{ name: 'sixth-weather-home' }"
+    >
+      ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>
 </template>
@@ -27,28 +32,48 @@ import { RouterLink } from 'vue-router'
   padding: 14px;
   border: 1px solid #d6e0ed;
   border-radius: 6px;
-  background: #ffffff;
+  background: #fff;
 }
 
-.about-view h1 {
-  margin: 0 0 10px;
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h2 {
   color: #163a63;
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
-.about-view li + li {
-  margin-top: 5px;
+h3 {
+  margin-top: 16px;
+  font-size: 0.88rem;
+}
+
+p,
+li {
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li + li {
+  margin-top: 3px;
 }
 
 .back-link {
-  display: block;
-  margin-top: 8px;
-  padding: 7px 10px;
+  display: inline-block;
+  margin-top: 4px;
+  padding: 6px 9px;
   border-radius: 4px;
-  color: #ffffff;
+  color: #fff;
   background: #2563eb;
+  font-size: 0.74rem;
   font-weight: 700;
   text-decoration: none;
-  text-align: center;
 }
 </style>

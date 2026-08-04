@@ -3,15 +3,15 @@ import { RouterLink } from 'vue-router'
 </script>
 
 <template>
-  <section class="not-found-page">
+  <section class="not-found-view">
     <div class="not-found-card">
-      <div class="not-found-icon" aria-hidden="true">☀️ ❓</div>
-
+      <p class="not-found-icon" aria-hidden="true">☀️ ❓</p>
       <h2>페이지를 찾을 수 없습니다.</h2>
-
-      <p>요청하신 주소가 존재하지 않거나,<br />아직 개발되지 않았습니다.</p>
-
-      <RouterLink class="home-link" :to="{ name: 'sixth-weather-home' }">
+      <p>요청한 주소가 존재하지 않거나 아직 개발되지 않았습니다.</p>
+      <RouterLink
+        class="back-link"
+        :to="{ name: 'sixth-weather-home' }"
+      >
         날씨 메인으로 이동
       </RouterLink>
     </div>
@@ -19,78 +19,49 @@ import { RouterLink } from 'vue-router'
 </template>
 
 <style scoped>
-.not-found-page {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 500px;
-  margin-top: 16px;
-  padding: 120px 24px 72px;
-  background: #f8fafc;
-}
-
-.not-found-card {
-  width: min(300px, 100%);
-  padding: 52px 30px 44px;
-  border: 1px solid #e5e7eb;
-  border-radius: 9px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgb(15 23 42 / 14%);
+.not-found-view {
+  padding: 28px 14px;
+  border-radius: 6px;
+  background: #eef2f7;
   text-align: center;
 }
 
+.not-found-card {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 18px;
+  border: 1px solid #d6e0ed;
+  border-radius: 8px;
+  background: #fff;
+}
+
 .not-found-icon {
-  margin-bottom: 28px;
-  font-size: 3.6rem;
-  line-height: 1;
-  letter-spacing: 10px;
+  margin: 0 0 8px;
+  font-size: 2rem;
 }
 
-.not-found-card h2 {
-  margin: 0 0 20px;
-  color: #1f2937;
-  font-size: 1.2rem;
-  font-weight: 800;
+h2 {
+  margin: 0 0 8px;
+  color: #163a63;
+  font-size: 1rem;
 }
 
-.not-found-card p {
-  margin: 0 0 28px;
-  color: #6b7280;
-  font-size: 0.82rem;
-  line-height: 1.7;
+.not-found-card > p:not(.not-found-icon) {
+  margin: 0;
+  color: #526276;
+  font-size: 0.76rem;
+  line-height: 1.5;
 }
 
-.home-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 9px 20px;
+.back-link {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 5px 10px;
   border-radius: 999px;
-  color: #ffffff;
-  background: #168cf4;
-  font-size: 0.78rem;
+  color: #fff;
+  background: #2563eb;
+  font-size: 0.72rem;
   font-weight: 700;
   text-decoration: none;
-}
-
-.home-link:hover {
-  background: #0877d1;
-}
-
-.home-link:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 3px;
-}
-
-@media (max-width: 420px) {
-  .not-found-page {
-    min-height: 420px;
-    padding: 80px 18px 56px;
-  }
-
-  .not-found-card {
-    width: 100%;
-    padding: 42px 22px 36px;
-  }
 }
 </style>
