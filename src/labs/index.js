@@ -35,4 +35,10 @@ export const labs = [
     title: '과제 6: Axios 활용',
     path: '/sixth',
   },
+  {
+    id: 'seventh',
+    label: '일곱 번째 실습',
+    title: '과제 7: Element Plus 활용',
+    path: '/seventh',
+  },
 ]
