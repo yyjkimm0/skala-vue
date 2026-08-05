@@ -7,6 +7,10 @@ import { fetchCurrentWeather } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * route의 도시 설정으로 상세 날씨를 다시 요청하고 실패하면 같은 도시의 Mock Data를 표시한다.
+ * 목록 데이터를 공유하지 않아 상세 URL로 직접 진입해도 자체적으로 데이터를 준비할 수 있다.
+ */
 const route = useRoute()
 const configStore = useConfigStore()
 
@@ -31,6 +35,7 @@ const locationNames = {
 }
 
 const loadWeatherDetail = async () => {
+  // 연속 route 변경 시 먼저 시작한 요청이 늦게 끝나 최신 화면을 덮어쓰지 못하게 한다.
   const loadId = ++latestLoadId
   const cityId = route.params.cityId
   const cityConfig = findWeatherCityById(cityId)
@@ -52,12 +57,14 @@ const loadWeatherDetail = async () => {
       city.value = currentWeather
     }
   } catch {
+    // 현재 요청의 실패만 반영하며 API 실패를 사용자에게 알리고 Mock 사용 상태를 구분한다.
     if (loadId === latestLoadId) {
       city.value = mockCity ?? null
       errorMessage.value = `${cityConfig.name} 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
       isUsingMockFallback.value = true
     }
   } finally {
+    // 오래된 요청은 최신 요청의 loading 상태도 종료하지 않는다.
     if (loadId === latestLoadId) {
       isLoading.value = false
     }

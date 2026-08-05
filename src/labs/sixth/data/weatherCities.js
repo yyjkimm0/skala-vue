@@ -1,3 +1,7 @@
+/**
+ * id와 name은 route·화면 식별에, query는 OpenWeather의 도시 검색에 사용한다.
+ * 화면 표시값과 외부 API 요청값을 분리해 각 책임의 형식이 서로 영향을 주지 않게 한다.
+ */
 export const weatherCities = [
   {
     id: 'city_01',

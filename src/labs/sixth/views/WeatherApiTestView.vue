@@ -2,11 +2,16 @@
 import { onMounted, ref } from 'vue'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
+/**
+ * 대시보드와 분리된 최소 화면에서 서울 API 요청과 내부 weather model을 확인한다.
+ * 여기서는 Mock fallback을 사용하지 않아 실제 요청 실패가 error 상태로 그대로 드러난다.
+ */
 const weather = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
 
 const loadSeoulWeather = async () => {
+  // 새 요청을 시작할 때 이전 오류를 지우고 완료 여부와 관계없이 finally에서 loading을 종료한다.
   isLoading.value = true
   errorMessage.value = ''
 
@@ -27,6 +32,7 @@ onMounted(loadSeoulWeather)
   <section class="weather-api-test">
     <h2>서울 현재 날씨 API 테스트</h2>
 
+    <!-- loading, error, 성공 데이터 순서로 서로 배타적인 요청 상태를 표시한다. -->
     <p v-if="isLoading" class="weather-api-test__status weather-api-test__status--loading">
       서울 날씨를 불러오는 중입니다.
     </p>

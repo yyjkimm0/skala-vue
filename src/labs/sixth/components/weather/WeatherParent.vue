@@ -10,6 +10,10 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * 세 도시의 실시간 날씨를 병렬로 요청하고 결과를 기존 카드 모델로 구성한다.
+ * 요청 중에는 loading을 표시하고 실패한 도시만 Mock Data로 대체해 나머지 성공 결과를 보존한다.
+ */
 const router = useRouter()
 const configStore = useConfigStore()
 
@@ -19,6 +23,7 @@ const weatherItems = ref([...weatherList])
 const isLoadingWeather = ref(false)
 const failedCityIds = ref([])
 
+// 실패한 도시 id를 사용자 안내에 필요한 표시명으로 변환한다.
 const failedCityNames = computed(() =>
   weatherCities.filter((city) => failedCityIds.value.includes(city.id)).map((city) => city.name),
 )
@@ -56,20 +61,24 @@ const loadWeather = async () => {
   failedCityIds.value = []
 
   try {
+    // allSettled는 일부 도시 요청이 실패해도 모든 성공·실패 결과를 도시 순서대로 확인하게 한다.
     const results = await Promise.allSettled(
       weatherCities.map((cityConfig) => fetchCurrentWeather(cityConfig)),
     )
     const mockWeatherById = new Map(weatherList.map((weather) => [weather.id, weather]))
 
+    // 성공값과 Mock fallback이 같은 내부 모델이므로 이후 검색과 카드 렌더링은 출처를 구분하지 않는다.
     weatherItems.value = results.map((result, index) =>
       result.status === 'fulfilled' ? result.value : mockWeatherById.get(weatherCities[index].id),
     )
 
+    // fallback을 성공처럼 숨기지 않고 실패한 도시만 별도 상태로 기록한다.
     failedCityIds.value = results.flatMap((result, index) =>
       result.status === 'rejected' ? [weatherCities[index].id] : [],
     )
 
     if (selectedCityInfo.value) {
+      // 이미 선택한 카드도 새 API 또는 fallback 결과 객체로 교체해 화면 정보를 최신 상태로 맞춘다.
       selectedCityInfo.value =
         weatherItems.value.find((weather) => weather.id === selectedCityInfo.value.id) ?? null
     }
@@ -113,6 +122,7 @@ const showDetail = (weather) => {
 
     <BaseDashboardCard aria-labelledby="sixth-weather-list-title">
       <h2 id="sixth-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <!-- loading 안내가 fallback 안내보다 먼저 표시되고, 완료 후에만 실패 도시를 알린다. -->
       <p
         v-if="isLoadingWeather"
         class="weather-load-status weather-load-status--loading"

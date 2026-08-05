@@ -1,4 +1,4 @@
-// 과제 화면에서 사용하는 고정 날씨 Mock Data입니다.
+// API 요청이 실패한 도시만 대체할 수 있도록 내부 weather model과 같은 형태로 유지한다.
 export const weatherList = [
   {
     id: 'city_01',
