@@ -1,7 +1,8 @@
 <script setup>
-import { computed, onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { ElAlert, ElButton, ElSkeleton } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useWeatherSearch } from '../../composables/useWeatherSearch.js'
 import { weatherCities } from '../../data/weatherCities.js'
 import { weatherList } from '../../data/weatherData.js'
 import { fetchCurrentWeather } from '../../services/weatherApi.js'
@@ -18,11 +19,11 @@ import WeatherCard from './WeatherCard.vue'
 const router = useRouter()
 const configStore = useConfigStore()
 
-const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 const weatherItems = ref([...weatherList])
 const isLoadingWeather = ref(false)
 const failedCityIds = ref([])
+const { searchQuery, filteredWeatherList, updateSearchQuery } = useWeatherSearch(weatherItems)
 
 const failedCityNames = computed(() =>
   weatherCities.filter((city) => failedCityIds.value.includes(city.id)).map((city) => city.name),
@@ -33,19 +34,6 @@ const fallbackMessage = computed(() =>
     ? `${failedCityNames.value.join(', ')}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
     : '',
 )
-
-// API와 fallback을 합친 내부 모델에서 도시명 부분 검색을 수행하고 빈 검색어이면 전체를 반환한다.
-const filteredWeatherList = computed(() => {
-  const normalizedQuery = searchQuery.value.trim().toLowerCase()
-
-  if (!normalizedQuery) {
-    return weatherItems.value
-  }
-
-  return weatherItems.value.filter((weather) =>
-    weather.name.toLowerCase().includes(normalizedQuery),
-  )
-})
 
 const selectedTemperature = computed(() => {
   if (!selectedCityInfo.value) {
@@ -58,11 +46,6 @@ const selectedTemperature = computed(() => {
 const selectCity = (weather) => {
   // WeatherCard가 전달한 객체 전체를 Home의 선택 상태로 보관한다.
   selectedCityInfo.value = weather
-}
-
-const updateSearchQuery = (value) => {
-  // ElInput의 model update·clear·IME 값을 부모 검색 상태에 반영한다.
-  searchQuery.value = value
 }
 
 const loadWeather = async () => {
@@ -103,16 +86,6 @@ watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
-})
-
-watchEffect(() => {
-  // 최초 실행 후 검색어와 computed 결과를 자동 추적하고 API 배열 교체에도 다시 반응한다.
-  const query = searchQuery.value.trim()
-  const resultNames = filteredWeatherList.value.map((weather) => weather.name)
-
-  console.log('[watchEffect] 검색 상태')
-  console.log(`검색어: ${query || '입력 없음'}`)
-  console.log(`검색 결과: ${resultNames.length ? resultNames.join(', ') : '검색 결과 없음'}`)
 })
 
 const showDetail = (weather) => {
