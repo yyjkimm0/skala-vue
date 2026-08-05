@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   ElAlert,
   ElCard,
@@ -18,13 +19,23 @@ import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
 const configStore = useConfigStore()
+const route = useRoute()
+const router = useRouter()
 const forecasts = ref([])
 const isLoading = ref(false)
 const errorMessage = ref('')
-const selectedCityId = ref('city_01')
 const forecastFilter = ref('all')
 const RAIN_PROBABILITY_THRESHOLD = 0.3
+const DEFAULT_CITY_ID = 'city_01'
 let latestRequestId = 0
+
+const getQueryCityId = (queryCityId) => {
+  const cityId = Array.isArray(queryCityId) ? queryCityId[0] : queryCityId
+
+  return typeof cityId === 'string' && findWeatherCityById(cityId) ? cityId : DEFAULT_CITY_ID
+}
+
+const selectedCityId = ref(getQueryCityId(route.query.cityId))
 
 const selectedCity = computed(() => findWeatherCityById(selectedCityId.value))
 
@@ -80,6 +91,39 @@ const visibleForecasts = computed(() => {
   return source
 })
 
+const openForecastDetail = (localDate) => {
+  router.push({
+    name: 'final-weather-forecast-detail',
+    params: {
+      cityId: selectedCityId.value,
+      localDate,
+    },
+  })
+}
+
+const syncSelectedCityQuery = (cityId) => {
+  if (route.name !== 'final-weather-forecast') {
+    return
+  }
+
+  const resolvedCityId = getQueryCityId(cityId)
+
+  if (
+    getQueryCityId(route.query.cityId) === resolvedCityId &&
+    route.query.cityId === resolvedCityId
+  ) {
+    return
+  }
+
+  router.replace({
+    name: 'final-weather-forecast',
+    query: {
+      ...route.query,
+      cityId: resolvedCityId,
+    },
+  })
+}
+
 const formatLocalDate = (localDate) => {
   const [year, month, day] = localDate.split('-')
 
@@ -119,6 +163,24 @@ const loadForecast = async () => {
 }
 
 watch(selectedCityId, loadForecast, { immediate: true })
+
+watch(
+  () => route.query.cityId,
+  (queryCityId) => {
+    if (route.name !== 'final-weather-forecast') {
+      return
+    }
+
+    const resolvedCityId = getQueryCityId(queryCityId)
+
+    if (selectedCityId.value !== resolvedCityId) {
+      selectedCityId.value = resolvedCityId
+    }
+
+    syncSelectedCityQuery(resolvedCityId)
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -138,6 +200,7 @@ watch(selectedCityId, loadForecast, { immediate: true })
           placeholder="도시 선택"
           aria-label="예보 도시 선택"
           size="small"
+          @change="syncSelectedCityQuery"
         >
           <ElOption
             v-for="city in weatherCities"
@@ -186,6 +249,12 @@ watch(selectedCityId, loadForecast, { immediate: true })
           :key="forecast.id"
           class="forecast-card"
           shadow="hover"
+          role="button"
+          tabindex="0"
+          :aria-label="`${formatLocalDate(forecast.localDate)} 상세 예보 보기`"
+          @click="openForecastDetail(forecast.localDate)"
+          @keydown.enter="openForecastDetail(forecast.localDate)"
+          @keydown.space.prevent="openForecastDetail(forecast.localDate)"
         >
           <div class="forecast-card__layout">
             <div class="forecast-card__summary">
@@ -278,6 +347,12 @@ p {
 
 .forecast-card {
   min-width: 0;
+  cursor: pointer;
+}
+
+.forecast-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 .forecast-card :deep(.el-card__body) {

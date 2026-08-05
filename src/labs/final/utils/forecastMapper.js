@@ -24,6 +24,7 @@ export const mapForecastResponse = (responseData, cityConfig) => {
       pop,
     } = normalizedItem
     const status = condition?.description ?? '정보 없음'
+    const icon = condition?.icon ?? ''
     const precipitationProbability = pop ?? 0
     const id = `${cityConfig.id}-${dateTime ?? dt}`
     const cityId = cityConfig.id
@@ -46,6 +47,7 @@ export const mapForecastResponse = (responseData, cityConfig) => {
       temp,
       feelsLike,
       status,
+      icon,
       humidity,
       windSpeed,
       precipitationProbability,

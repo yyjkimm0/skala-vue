@@ -10,6 +10,11 @@ export const finalRoutes = [
     component: () => import('../views/WeatherForecastView.vue'),
   },
   {
+    path: 'forecast/:cityId/:localDate',
+    name: 'final-weather-forecast-detail',
+    component: () => import('../views/WeatherForecastDetailView.vue'),
+  },
+  {
     path: 'about',
     name: 'final-weather-about',
     component: () => import('../views/WeatherAboutView.vue'),
