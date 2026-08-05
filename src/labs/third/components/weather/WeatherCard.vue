@@ -29,6 +29,7 @@ const clickDetail = () => {
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">현재 기온: {{ props.weather.temp }}℃</p>
+      <!-- 원본 기온은 변경하지 않고 25도 기준으로 카드에 표시할 상태 문구만 선택한다. -->
       <span v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </span>

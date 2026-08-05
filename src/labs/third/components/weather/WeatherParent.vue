@@ -10,6 +10,8 @@ import WeatherCard from './WeatherCard.vue'
  * 부모가 상태와 흐름을 소유하고 자식은 props로 값을 받아 emit으로 사용자 의도를 전달한다.
  * 상세 Router·Pinia·API 연동 전의 Mock Data 구조는 유지한다.
  */
+// 외부 API 도입 전이므로 부모가 이름·기온·상태를 담은 고정 도시 데이터를 소유한다.
+// 각 id는 검색 결과가 바뀌어도 v-for 카드의 정체성을 유지하는 식별값이다.
 const weatherList = ref([
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
   { id: 'city_02', name: '수원', temp: 24, status: '비' },
@@ -20,6 +22,8 @@ const weatherList = ref([
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 
+// 검색어의 앞뒤 공백을 제거한 뒤 도시 이름의 부분 문자열과 비교해 화면용 목록을 파생한다.
+// 빈 검색어는 전체 목록을 반환하며 원본 Mock Data 배열은 직접 수정하지 않는다.
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
 
@@ -36,20 +40,25 @@ const updateSearchQuery = (value) => {
 }
 
 const selectCity = (weather) => {
+  // WeatherCard가 payload로 보낸 객체 전체를 저장해 선택 상태바에서 모든 표시값을 함께 사용한다.
   selectedCityInfo.value = weather
 }
 
 const showDetail = (weather) => {
-  // WeatherCard는 의도만 전달하고, 현재 단계의 alert 후속 동작은 부모가 결정한다.
+  // 상세 route 도입 전이므로 WeatherCard는 의도만 전달하고 alert 후속 동작은 부모가 결정한다.
   window.alert(`${weather.name}의 현재 날씨는 [${weather.status}] 상태입니다.`)
 }
 
+// 선택 객체의 참조 변경을 명시적으로 감시해 이전 도시와 현재 도시를 비교한다.
+// immediate 옵션이 없어 최초 마운트에는 실행되지 않고 실제 카드 선택 이후부터 동작한다.
 watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
 })
 
+// 콜백에서 읽는 검색어와 computed 결과를 자동 추적하며 설정 시 최초 한 번 실행된다.
+// 이후 입력이나 필터 결과가 바뀌면 현재 검색 상태를 다시 기록해 명시적 watch와 역할을 나눈다.
 watchEffect(() => {
   const query = searchQuery.value.trim()
   const resultNames = filteredWeatherList.value.map((weather) => weather.name)
@@ -70,6 +79,7 @@ watchEffect(() => {
     <BaseDashboardCard aria-labelledby="third-weather-list-title">
       <h2 id="third-weather-list-title">🏙️ 지역별 날씨 현황</h2>
 
+      <!-- 파생 목록은 id를 key로 카드에 전달하고, 결과가 없으면 별도 안내로 전환한다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
