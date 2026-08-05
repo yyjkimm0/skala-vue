@@ -1,6 +1,10 @@
 <script setup>
 import { useConfigStore } from '../../stores/configStore.js'
 
+/**
+ * 단위를 로컬에 복제하지 않고 config Store의 현재 값과 기호를 표시한다.
+ * 버튼 입력을 Store action에 위임해 목록과 상세 화면을 함께 갱신한다.
+ */
 const configStore = useConfigStore()
 </script>
 

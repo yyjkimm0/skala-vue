@@ -1,5 +1,7 @@
 <script setup>
 import { ElCard } from 'element-plus'
+
+/** 기능 상태를 모르는 ElCard 표현 wrapper로, 기본 slot 콘텐츠에 공통 대시보드 외곽을 제공한다. */
 </script>
 
 <template>
@@ -14,6 +16,7 @@ import { ElCard } from 'element-plus'
   border-radius: 6px;
 }
 
+/* scoped CSS가 직접 닿지 않는 ElCard 내부 body의 여백만 제한적으로 조정한다. */
 .dashboard-card :deep(.el-card__body) {
   padding: 12px;
 }

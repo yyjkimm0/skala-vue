@@ -8,6 +8,10 @@ import { fetchCurrentWeather } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * route의 도시 설정으로 Current Weather를 독립 요청해 목록 없이 직접 접근·새로고침을 지원한다.
+ * 최신 요청 실패만 같은 도시 fallback으로 대체하고 final Store 단위와 상태 UI를 적용한다.
+ */
 const route = useRoute()
 const configStore = useConfigStore()
 
@@ -32,6 +36,7 @@ const locationNames = {
 }
 
 const loadWeatherDetail = async () => {
+  // 연속 cityId 변경에서 이전 요청이 늦게 끝나 최신 데이터와 loading을 덮지 못하게 한다.
   const loadId = ++latestLoadId
   const cityId = route.params.cityId
   const cityConfig = findWeatherCityById(cityId)
@@ -53,6 +58,7 @@ const loadWeatherDetail = async () => {
       city.value = currentWeather
     }
   } catch {
+    // 유효한 도시의 최신 요청 실패와 잘못된 cityId를 서로 다른 화면 상태로 유지한다.
     if (loadId === latestLoadId) {
       city.value = mockCity ?? null
       errorMessage.value = `${cityConfig.name} 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
@@ -65,6 +71,7 @@ const loadWeatherDetail = async () => {
   }
 }
 
+// 최초 직접 진입과 같은 View 안의 route param 변경 모두에서 새 요청 흐름을 시작한다.
 watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 </script>
 

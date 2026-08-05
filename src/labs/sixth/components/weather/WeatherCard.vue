@@ -2,6 +2,10 @@
 import { computed } from 'vue'
 import { convertTemperature } from '../../utils/temperature.js'
 
+/**
+ * API와 fallback이 공유하는 내부 weather model을 받아 같은 카드 표현에 사용한다.
+ * 섭씨 원본은 보존한 채 단위별 표시값만 계산하고 선택·상세 의도는 부모에 emit한다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -19,6 +23,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-card', 'click-detail'])
 
+// 단위 prop이 바뀌면 표시값만 다시 계산하며 더움·선선함은 원본 섭씨 25도를 기준으로 한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
 const selectCard = () => {
@@ -31,6 +36,7 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드 클릭과 Enter는 같은 선택 이벤트를 내보내 포인터와 키보드 입력을 함께 지원한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
@@ -42,6 +48,7 @@ const clickDetail = () => {
       </span>
       <span v-else class="temperature-label cool"> ❄️ 선선함 (25도 미만) </span>
     </div>
+    <!-- 상세 입력의 전파를 막아 카드 선택과 route 이동 의도가 한 번에 겹치지 않게 한다. -->
     <button type="button" @click.stop="clickDetail" @keydown.enter.stop>상세보기</button>
   </article>
 </template>

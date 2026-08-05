@@ -3,6 +3,11 @@ import { computed } from 'vue'
 
 import { convertTemperature } from '../../utils/temperature.js'
 
+/**
+ * 부모가 전달한 표시 단위를 사용해 카드의 섭씨 원본 기온을 화면용 값으로 변환한다.
+ * 단위가 바뀌어도 weather 객체와 원본 temp는 변경하지 않으며, 선택과 상세 의도만 emit한다.
+ * 실제 상태 변경과 route 이동은 이 이벤트를 받는 부모의 책임이다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -20,6 +25,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-card', 'click-detail'])
 
+// unit prop이 바뀌면 표시값만 다시 계산되며 더움·선선함 기준은 원본 섭씨값을 유지한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
 const selectCard = () => {
@@ -32,18 +38,21 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드 클릭과 Enter는 같은 선택 이벤트를 내보내 키보드에서도 선택할 수 있게 한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">
         현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
+      <!-- 상태 판정은 화씨 표시 여부와 무관하게 섭씨 원본 25도를 기준으로 한다. -->
       <span v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </span>
       <span v-else class="temperature-label cool"> ❄️ 선선함 (25도 미만) </span>
     </div>
 
+    <!-- 상세 버튼의 이벤트 전파를 막아 카드 선택과 상세 이동이 한 입력에서 겹치지 않게 한다. -->
     <button type="button" @click.stop="clickDetail" @keydown.enter.stop>상세보기</button>
   </article>
 </template>

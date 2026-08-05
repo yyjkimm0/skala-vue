@@ -1,3 +1,4 @@
+/* eighth 공통 shell의 폭과 navigation만 담당하고 각 상태 UI는 SFC scoped style로 분리한다. */
 button,
 input {
   font: inherit;

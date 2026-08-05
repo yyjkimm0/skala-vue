@@ -2,6 +2,12 @@
 import { RouterLink, RouterView } from 'vue-router'
 import UnitToggler from './components/weather/UnitToggler.vue'
 import './assets/lab.css'
+
+/**
+ * fifth의 Router와 Pinia 단위 상태를 유지하면서 Mock 중심 화면을 OpenWeather API로 확장한다.
+ * sixth는 Axios 요청, 응답 매핑, loading·error·fallback 처리를 추가하며 Element Plus는 사용하지 않는다.
+ * 자식 View가 교체돼도 상위 UnitToggler와 config Store는 같은 SPA 실행 범위에 유지된다.
+ */
 </script>
 
 <template>

@@ -17,6 +17,11 @@ import { fetchWeatherForecast } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * 전체 3시간 Forecast를 현지 날짜로 묶고 각 날짜의 정오에 가장 가까운 대표값을 만든다.
+ * 대표값을 날짜순 최대 5개로 제한한 뒤 도시 선택과 전체·비 예보 필터를 화면 상태에 연결한다.
+ * Forecast는 fallback 없이 자체 loading·error·empty를 관리하고 Store 단위는 표시 단계에만 적용한다.
+ */
 const configStore = useConfigStore()
 const forecasts = ref([])
 const isLoading = ref(false)
@@ -28,6 +33,7 @@ let latestRequestId = 0
 
 const selectedCity = computed(() => findWeatherCityById(selectedCityId.value))
 
+// reduce와 spread로 같은 localDate의 항목을 새 배열에 모아 원본 forecasts를 변경하지 않는다.
 const forecastsByDate = computed(() =>
   forecasts.value.reduce((groups, forecast) => {
     const dateForecasts = groups[forecast.localDate] ?? []
@@ -39,6 +45,7 @@ const forecastsByDate = computed(() =>
   }, {}),
 )
 
+// 한 날짜의 3시간 예보 중 현지 12시와 시간 차이가 가장 작은 항목을 대표값으로 선택한다.
 const selectRepresentativeForecast = (dateForecasts) =>
   dateForecasts.reduce((closest, forecast) => {
     if (!closest) {
@@ -51,11 +58,13 @@ const selectRepresentativeForecast = (dateForecasts) =>
     return currentDistance < closestDistance ? forecast : closest
   }, null)
 
+// 그룹을 배열로 바꾸고 대표값 생성 → 날짜 정렬 → 최대 5일 제한 순서로 처리한다.
 const dailyForecasts = computed(() =>
   Object.entries(forecastsByDate.value)
     .map(([localDate, dateForecasts]) => {
       const representativeForecast = selectRepresentativeForecast(dateForecasts)
 
+      // 객체 spread로 대표 예보 필드를 보존하면서 그룹의 localDate를 명시한다.
       return {
         ...representativeForecast,
         localDate,
@@ -67,13 +76,16 @@ const dailyForecasts = computed(() =>
     .slice(0, 5),
 )
 
+// 상태 문구에 비가 포함되거나 강수확률이 30% 이상이면 비 예보로 분류한다.
 const isRainyForecast = (forecast) =>
   forecast.status.includes('비') || forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
 
 const visibleForecasts = computed(() => {
+  // spread로 대표 배열을 복사해 필터 과정이 dailyForecasts 원본에 영향을 주지 않게 한다.
   const source = [...dailyForecasts.value]
 
   if (forecastFilter.value === 'rainy') {
+    // filter는 비 예보 보기에서 조건에 맞는 대표 카드만 남긴다.
     return source.filter(isRainyForecast)
   }
 
@@ -93,6 +105,10 @@ const displayTemperature = (temperature) => convertTemperature(temperature, conf
 const toPercentage = (probability) =>
   Math.min(100, Math.max(0, Math.round((probability ?? 0) * 100)))
 
+/**
+ * 도시가 바뀔 때 이전 예보와 오류를 초기화한 뒤 새 Forecast를 요청한다.
+ * 요청 번호가 일치하는 최신 결과만 반영해 빠른 도시 전환에서 늦은 응답이 화면을 덮지 못하게 한다.
+ */
 const loadForecast = async () => {
   const requestId = ++latestRequestId
   const cityConfig = selectedCity.value
@@ -132,6 +148,7 @@ watch(selectedCityId, loadForecast, { immediate: true })
       </template>
 
       <div class="forecast-controls">
+        <!-- 선택 id는 도시 설정을 거쳐 API query로 연결되고 watch가 새 요청을 시작한다. -->
         <ElSelect
           v-model="selectedCityId"
           class="forecast-controls__city"
@@ -153,6 +170,7 @@ watch(selectedCityId, loadForecast, { immediate: true })
         </ElRadioGroup>
       </div>
 
+      <!-- loading → error → 원본 없음 → 필터 결과 없음 → 성공 카드 순서로 상태를 구분한다. -->
       <ElSkeleton
         v-if="isLoading"
         :rows="4"
@@ -181,6 +199,7 @@ watch(selectedCityId, loadForecast, { immediate: true })
       />
 
       <div v-else class="forecast-list">
+        <!-- 비 필터는 전체 3시간 배열이 아니라 날짜별 대표 예보 카드에만 적용된다. -->
         <ElCard
           v-for="forecast in visibleForecasts"
           :key="forecast.id"
@@ -264,6 +283,7 @@ p {
   gap: 4px;
 }
 
+/* Element Plus가 생성한 Card 내부 중 Forecast 패널의 header와 body 여백만 조정한다. */
 .forecast-panel :deep(.el-card__header),
 .forecast-panel :deep(.el-card__body) {
   padding: 12px;
@@ -280,6 +300,7 @@ p {
   min-width: 0;
 }
 
+/* 대표 Forecast Card 내부 body의 정보 밀도를 eighth 화면 폭에 맞춘다. */
 .forecast-card :deep(.el-card__body) {
   padding: 10px;
 }

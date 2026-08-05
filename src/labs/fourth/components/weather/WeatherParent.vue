@@ -7,10 +7,17 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * Mock Data와 검색·선택 상태를 소유하고 자식의 입력·선택 이벤트를 후속 동작으로 연결한다.
+ * 상세보기는 자식이 전달한 도시 id로 route를 구성해 직접 접근 가능한 Detail View로 이동한다.
+ * Pinia와 API 연동 전이므로 Home과 Detail은 같은 고정 데이터를 사용한다.
+ */
 const router = useRouter()
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 
+// 검색어의 앞뒤 공백을 제거한 뒤 도시 이름의 부분 문자열과 비교해 화면용 목록을 파생한다.
+// 빈 검색어는 전체 목록을 반환하며 원본 Mock Data 배열은 수정하지 않는다.
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
 
@@ -22,14 +29,18 @@ const filteredWeatherList = computed(() => {
 })
 
 const updateSearchQuery = (value) => {
+  // SearchBar가 emit한 문자열을 부모 상태에 반영하면 새 검색 결과가 카드 props로 다시 내려간다.
   searchQuery.value = value
 }
 
 const selectCity = (weather) => {
+  // WeatherCard가 전달한 객체 전체를 저장해 Home의 선택 상태 안내에 필요한 값을 함께 유지한다.
   selectedCityInfo.value = weather
 }
 
 const showDetail = (weather) => {
+  // 자식이 전달한 도시가 실행 시점에 결정되므로 부모가 route name과 params로 목적지를 구성한다.
+  // router.push로 남은 URL 기록은 브라우저 뒤로가기·앞으로가기에서도 같은 상세 상태를 복원한다.
   router.push({
     name: 'fourth-weather-detail',
     params: {
@@ -38,12 +49,14 @@ const showDetail = (weather) => {
   })
 }
 
+// 선택 객체의 참조 변경을 감시해 이전·현재 도시를 비교하며 최초 마운트에는 실행되지 않는다.
 watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
 })
 
+// 검색어와 computed 결과를 자동 추적해 최초 한 번, 이후 두 값이 바뀔 때마다 검색 상태를 기록한다.
 watchEffect(() => {
   const query = searchQuery.value.trim()
   const resultNames = filteredWeatherList.value.map((weather) => weather.name)
@@ -56,6 +69,7 @@ watchEffect(() => {
 
 <template>
   <div class="weather-mockup">
+    <!-- 공통 외곽의 기본 slot에 검색 UI를 넣고 prop·emit으로 부모 상태와 연결한다. -->
     <BaseDashboardCard>
       <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
@@ -63,6 +77,7 @@ watchEffect(() => {
     <BaseDashboardCard aria-labelledby="fourth-weather-list-title">
       <h2 id="fourth-weather-list-title">🏙️ 지역별 날씨 현황</h2>
 
+      <!-- 파생 목록은 id를 key로 카드에 전달하고, 결과가 없으면 별도 안내로 전환한다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
@@ -87,6 +102,7 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+/* Home 부모가 조합하는 검색 패널·카드 목록·선택 상태의 배치를 이 View 범위에 한정한다. */
 .weather-mockup {
   display: grid;
   gap: 10px;

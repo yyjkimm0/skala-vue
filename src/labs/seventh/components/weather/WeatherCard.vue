@@ -3,6 +3,10 @@ import { computed } from 'vue'
 import { ElButton, ElTag } from 'element-plus'
 import { convertTemperature } from '../../utils/temperature.js'
 
+/**
+ * API와 fallback이 공유하는 내부 모델을 기존 article 선택 흐름과 동일하게 표시한다.
+ * ElTag와 ElButton은 상태와 행동을 표현하고, 선택과 상세 의도는 각각 부모에 전달한다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -22,6 +26,7 @@ const emit = defineEmits(['select-card', 'click-detail'])
 
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
+// 하나의 Tag 인스턴스에서 원본 섭씨 기준에 따라 색상과 문구만 바꿔 상태 위치를 유지한다.
 const isHot = computed(() => props.weather.temp >= 25)
 
 const selectCard = () => {
@@ -34,6 +39,7 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 포인터 클릭과 Enter가 같은 선택 이벤트를 사용하며 실제 선택 상태는 부모가 소유한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
@@ -51,6 +57,7 @@ const clickDetail = () => {
         </ElTag>
       </div>
     </div>
+    <!-- 상세 버튼 입력이 article의 카드 선택 이벤트로 전파되지 않도록 기존 책임을 분리한다. -->
     <ElButton
       class="weather-card__detail"
       size="small"

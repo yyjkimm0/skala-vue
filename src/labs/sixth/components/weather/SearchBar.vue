@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * API 출처와 무관한 내부 모델의 도시명을 검색하도록 부모 검색어를 prop으로 표시한다.
+ * 입력 문자열만 emit하며 Router, Store, 서버 상태를 알거나 prop을 직접 변경하지 않는다.
+ */
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -9,6 +13,7 @@ const props = defineProps({
 const emit = defineEmits(['update-query'])
 
 const handleInput = (event) => {
+  // 검색 원본 상태는 이 이벤트를 받는 Home 부모가 소유한다.
   emit('update-query', event.target.value)
 }
 </script>

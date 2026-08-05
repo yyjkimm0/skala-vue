@@ -18,6 +18,11 @@ import { fetchWeatherForecast } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * 선택 도시의 전체 3시간 Forecast를 날짜별 대표 카드로 만들고 상세 route 진입을 담당한다.
+ * 목록의 도시 선택은 query와 동기화해 상세 화면에서 돌아오거나 URL로 진입해도 복원한다.
+ * query·필터·요청은 이 View의 로컬 상태이고 여러 final 화면과 공유할 단위만 Store에서 읽는다.
+ */
 const configStore = useConfigStore()
 const route = useRoute()
 const router = useRouter()
@@ -29,16 +34,19 @@ const RAIN_PROBABILITY_THRESHOLD = 0.3
 const DEFAULT_CITY_ID = 'city_01'
 let latestRequestId = 0
 
+// query가 배열이면 첫 값을 사용하고, 등록되지 않은 값이나 누락값은 서울로 정규화한다.
 const getQueryCityId = (queryCityId) => {
   const cityId = Array.isArray(queryCityId) ? queryCityId[0] : queryCityId
 
   return typeof cityId === 'string' && findWeatherCityById(cityId) ? cityId : DEFAULT_CITY_ID
 }
 
+// query에는 API 검색 문자열이 아니라 목록 복원에 필요한 앱 내부 cityId만 저장한다.
 const selectedCityId = ref(getQueryCityId(route.query.cityId))
 
 const selectedCity = computed(() => findWeatherCityById(selectedCityId.value))
 
+// 전체 3시간 배열을 원본 그대로 둔 채 localDate별 새 배열로 그룹화한다.
 const forecastsByDate = computed(() =>
   forecasts.value.reduce((groups, forecast) => {
     const dateForecasts = groups[forecast.localDate] ?? []
@@ -50,6 +58,7 @@ const forecastsByDate = computed(() =>
   }, {}),
 )
 
+// 각 날짜에서 도시 현지 12시에 가장 가까운 한 시점을 목록 대표값으로 선택한다.
 const selectRepresentativeForecast = (dateForecasts) =>
   dateForecasts.reduce((closest, forecast) => {
     if (!closest) {
@@ -62,6 +71,7 @@ const selectRepresentativeForecast = (dateForecasts) =>
     return currentDistance < closestDistance ? forecast : closest
   }, null)
 
+// 대표값 생성 후 날짜순 정렬하고 상세로 진입할 최대 5일만 목록에 남긴다.
 const dailyForecasts = computed(() =>
   Object.entries(forecastsByDate.value)
     .map(([localDate, dateForecasts]) => {
@@ -82,6 +92,7 @@ const isRainyForecast = (forecast) =>
   forecast.status.includes('비') || forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
 
 const visibleForecasts = computed(() => {
+  // 비 필터는 상세 시간 흐름이 아니라 날짜별 대표 카드에만 적용한다.
   const source = [...dailyForecasts.value]
 
   if (forecastFilter.value === 'rainy') {
@@ -91,6 +102,7 @@ const visibleForecasts = computed(() => {
   return source
 })
 
+// route name과 필수 params를 사용해 선택 도시·날짜가 식별되는 상세 URL로 이동한다.
 const openForecastDetail = (localDate) => {
   router.push({
     name: 'final-weather-forecast-detail',
@@ -101,6 +113,10 @@ const openForecastDetail = (localDate) => {
   })
 }
 
+/**
+ * 목록의 도시 선택과 URL query를 같은 값으로 맞춘다.
+ * 단순 선택 변경은 replace로 반영해 도시를 바꿀 때마다 history가 늘어나는 것을 막는다.
+ */
 const syncSelectedCityQuery = (cityId) => {
   if (route.name !== 'final-weather-forecast') {
     return
@@ -138,6 +154,7 @@ const toPercentage = (probability) =>
   Math.min(100, Math.max(0, Math.round((probability ?? 0) * 100)))
 
 const loadForecast = async () => {
+  // 빠른 도시 전환에서는 최신 요청 결과와 loading 종료만 목록 상태에 반영한다.
   const requestId = ++latestRequestId
   const cityConfig = selectedCity.value
 
@@ -164,6 +181,7 @@ const loadForecast = async () => {
 
 watch(selectedCityId, loadForecast, { immediate: true })
 
+// 뒤로 가기나 직접 URL 진입으로 query가 바뀌면 검증된 도시를 화면 상태에도 반영한다.
 watch(
   () => route.query.cityId,
   (queryCityId) => {
@@ -216,6 +234,7 @@ watch(
         </ElRadioGroup>
       </div>
 
+      <!-- loading → error → 원본 empty → 필터 empty → 대표 카드 순서로 상태를 구분한다. -->
       <ElSkeleton
         v-if="isLoading"
         :rows="4"
@@ -244,6 +263,7 @@ watch(
       />
 
       <div v-else class="forecast-list">
+        <!-- 대표 카드는 마우스와 Enter·Space로 열 수 있고 Space의 기본 페이지 스크롤은 막는다. -->
         <ElCard
           v-for="forecast in visibleForecasts"
           :key="forecast.id"

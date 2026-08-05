@@ -1,5 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+
+/** 상태 로직 없이 서비스 정보를 표시하고 RouterLink로 Home 복귀 경로를 제공한다. */
 </script>
 
 <template>

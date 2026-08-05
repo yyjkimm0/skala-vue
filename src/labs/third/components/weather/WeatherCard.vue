@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * 날씨 객체 한 건을 표시하고 선택과 상세보기 의도를 서로 다른 이벤트로 전달한다.
+ * 부모 상태를 직접 변경하거나 alert 같은 후속 동작을 결정하지 않는다.
+ */
+// 부모가 소유한 카드 표시 데이터를 읽기 전용 입력으로 받는다.
 const props = defineProps({
   weather: {
     type: Object,
@@ -6,6 +11,7 @@ const props = defineProps({
   },
 })
 
+// 사용자의 두 행동을 구분해 부모가 각각의 상태 변경과 후속 동작을 처리하게 한다.
 const emit = defineEmits(['select-card', 'click-detail'])
 
 const selectCard = () => {
@@ -18,10 +24,12 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드 전체는 클릭과 Enter로 선택하며, 상세 버튼은 이벤트 전파를 막아 별도로 동작한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">현재 기온: {{ props.weather.temp }}℃</p>
+      <!-- 원본 기온은 변경하지 않고 25도 기준으로 카드에 표시할 상태 문구만 선택한다. -->
       <span v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </span>
@@ -33,6 +41,7 @@ const clickDetail = () => {
 </template>
 
 <style scoped>
+/* 개별 카드의 표시와 상호작용 스타일은 다른 컴포넌트로 퍼지지 않는다. */
 .weather-card {
   display: flex;
   align-items: center;

@@ -5,9 +5,14 @@ import LabSelector from './components/LabSelector.vue'
 import { labs } from './labs/index.js'
 import './assets/app-shell.css'
 
+/**
+ * 모든 lab에 공통으로 적용되는 제목과 선택 메뉴를 구성한다.
+ * 실제 과제 화면은 현재 route에 맞춰 RouterView에서 렌더링된다.
+ */
 const route = useRoute()
 const router = useRouter()
 
+// 부모 route의 meta와 labs metadata를 연결해 URL, 제목, selector의 기준을 하나로 유지한다.
 const currentLabId = computed(() => route.meta.labId ?? 'sixth')
 const currentLab = computed(() => labs.find((lab) => lab.id === currentLabId.value) ?? labs[5])
 

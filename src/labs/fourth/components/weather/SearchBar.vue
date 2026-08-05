@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * 부모가 소유한 검색어를 읽기 전용 prop으로 표시하고 native input의 새 값을 이벤트로 돌려준다.
+ * Router 도입 후에도 임시 검색 상태는 이 자식이 직접 수정하거나 소유하지 않는다.
+ */
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -34,6 +38,7 @@ const handleInput = (event) => {
 </template>
 
 <style scoped>
+/* 검색 입력과 현재 검색어 안내 스타일은 이 컴포넌트 내부에만 적용한다. */
 .search-bar {
   display: grid;
   gap: 7px;

@@ -1,3 +1,4 @@
+/* sixth route shell의 폭과 navigation만 담당하며 각 View의 상태 표현은 scoped style로 분리한다. */
 button,
 input {
   font: inherit;

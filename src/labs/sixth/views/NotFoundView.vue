@@ -1,5 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+
+/** 상세 route에도 해당하지 않는 sixth 하위 주소를 catch-all에서 안내하고 Home 링크를 제공한다. */
 </script>
 
 <template>

@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * 날씨 객체 한 건을 표시하고 카드 선택과 상세 route 이동 의도를 서로 다른 이벤트로 전달한다.
+ * 자식은 부모 상태와 실제 route 구성을 알지 않고 사용자 행동만 payload와 함께 알린다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -18,10 +22,12 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드는 route를 알지 않고 상세 의도만 전달하며, click.stop으로 선택과 이동을 분리한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">현재 기온: {{ props.weather.temp }}℃</p>
+      <!-- 원본 기온은 변경하지 않고 25도 기준으로 카드의 상태 문구만 선택한다. -->
       <span v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </span>
@@ -33,6 +39,7 @@ const clickDetail = () => {
 </template>
 
 <style scoped>
+/* 개별 카드의 표시·초점·상호작용 스타일은 이 컴포넌트 범위에 한정한다. */
 .weather-card {
   display: flex;
   align-items: center;

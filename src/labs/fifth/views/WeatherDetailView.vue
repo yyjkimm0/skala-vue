@@ -6,11 +6,17 @@ import { weatherList } from '../data/weatherData.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * route param으로 찾은 섭씨 Mock Data를 현재 Store 단위에 맞춰 표시한다.
+ * 목록의 선택 객체에 의존하지 않아 상세 URL 직접 접근과 새로고침에도 도시를 다시 조회한다.
+ * SPA route 이동 중에는 같은 Store를 사용하므로 Home과 Detail의 표시 단위가 함께 유지된다.
+ */
 const route = useRoute()
 const configStore = useConfigStore()
 
 const city = computed(() => weatherList.find((weather) => weather.id === route.params.cityId))
 
+// 도시가 존재할 때만 원본값을 현재 표시 단위로 변환하며 데이터 자체는 수정하지 않는다.
 const displayTemperature = computed(() => {
   if (!city.value) {
     return null
@@ -47,6 +53,7 @@ const displayTemperature = computed(() => {
       </div>
     </dl>
 
+    <!-- 상세 경로는 맞지만 cityId가 Mock Data에 없을 때 catch-all과 구분해 안내한다. -->
     <p v-else class="missing-city">해당 도시 정보를 찾을 수 없습니다.</p>
 
     <RouterLink class="back-link" :to="{ name: 'fifth-weather-home' }">
