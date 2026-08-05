@@ -10,22 +10,43 @@ const props = defineProps({
 
 const emit = defineEmits(['update-query'])
 
-const handleInput = (value) => {
+const emitQuery = (value) => {
+  if (typeof value !== 'string' || value === props.searchQuery) {
+    return
+  }
+
   emit('update-query', value)
+}
+
+const handleModelValueUpdate = (value) => {
+  emitQuery(value)
+}
+
+const handleNativeInput = (event) => {
+  const target = event.target
+
+  if (target instanceof HTMLInputElement) {
+    emitQuery(target.value)
+  }
 }
 </script>
 
 <template>
   <div class="search-bar">
     <label for="seventh-city-search">🔍 도시 검색</label>
-    <ElInput
-      id="seventh-city-search"
-      class="search-input"
-      :model-value="props.searchQuery"
-      placeholder="도시명을 입력하세요"
-      clearable
-      @update:model-value="handleInput"
-    />
+    <div
+      class="search-input-wrapper"
+      @input.capture="handleNativeInput"
+    >
+      <ElInput
+        id="seventh-city-search"
+        class="search-input"
+        :model-value="props.searchQuery"
+        placeholder="도시명을 입력하세요"
+        clearable
+        @update:model-value="handleModelValueUpdate"
+      />
+    </div>
     <p class="input-status">
       {{
         props.searchQuery.trim()
@@ -49,6 +70,7 @@ label {
   font-weight: 700;
 }
 
+.search-input-wrapper,
 .search-input {
   width: 100%;
   min-width: 0;

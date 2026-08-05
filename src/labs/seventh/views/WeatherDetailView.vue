@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { ElAlert, ElSkeleton } from 'element-plus'
 import { RouterLink, useRoute } from 'vue-router'
 import { findWeatherCityById } from '../data/weatherCities.js'
 import { weatherList } from '../data/weatherData.js'
@@ -71,18 +72,23 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
   <section class="weather-detail">
     <h2>📊 지역별 상세 기상 관측 정보</h2>
 
-    <p
+    <ElSkeleton
       v-if="isLoading"
-      class="weather-detail__loading"
-      role="status"
-    >
-      상세 날씨를 불러오는 중입니다.
-    </p>
+      class="weather-detail__skeleton"
+      :rows="5"
+      animated
+      aria-label="상세 날씨를 불러오는 중입니다."
+    />
 
     <template v-else>
-      <p v-if="isUsingMockFallback" class="weather-detail__notice" role="alert">
-        {{ errorMessage }}
-      </p>
+      <ElAlert
+        v-if="isUsingMockFallback"
+        class="weather-detail__alert"
+        :title="errorMessage"
+        type="warning"
+        show-icon
+        :closable="false"
+      />
 
       <dl v-if="city" class="weather-detail__list">
         <div>
@@ -138,22 +144,9 @@ h2 {
   font-size: 1rem;
 }
 
-.weather-detail__loading,
-.weather-detail__notice {
+.weather-detail__skeleton,
+.weather-detail__alert {
   margin: 0 0 12px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  font-size: 0.74rem;
-}
-
-.weather-detail__loading {
-  color: #1e40af;
-  background: #eff6ff;
-}
-
-.weather-detail__notice {
-  color: #92400e;
-  background: #fffbeb;
 }
 
 .weather-detail__list {

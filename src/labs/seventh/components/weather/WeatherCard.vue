@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { convertTemperature } from '../../utils/temperature.js'
 
 const props = defineProps({
@@ -24,6 +24,8 @@ const displayTemperature = computed(() =>
   convertTemperature(props.weather.temp, props.unit),
 )
 
+const isHot = computed(() => props.weather.temp >= 25)
+
 const selectCard = () => {
   emit('select-card', props.weather)
 }
@@ -45,18 +47,16 @@ const clickDetail = () => {
       <p class="weather-card__temperature">
         현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
-      <span
-        v-if="props.weather.temp >= 25"
-        class="temperature-label hot"
-      >
-        🔥 더움 (25도 이상)
-      </span>
-      <span
-        v-else
-        class="temperature-label cool"
-      >
-        ❄️ 선선함 (25도 미만)
-      </span>
+      <div class="temperature-tag-slot">
+        <ElTag
+          class="temperature-tag"
+          :type="isHot ? 'danger' : 'primary'"
+          size="small"
+          effect="light"
+        >
+          {{ isHot ? '🔥 더움 (25도 이상)' : '❄️ 선선함 (25도 미만)' }}
+        </ElTag>
+      </div>
     </div>
     <ElButton
       class="weather-card__detail"
@@ -90,7 +90,12 @@ const clickDetail = () => {
 }
 
 .weather-card__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
   min-width: 0;
+  text-align: left;
 }
 
 h3,
@@ -109,23 +114,20 @@ h3 {
   font-size: 0.78rem;
 }
 
-.temperature-label {
-  display: inline-block;
+.temperature-tag-slot {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 24px;
   margin-top: 5px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.68rem;
-  font-weight: 700;
+  text-align: left;
 }
 
-.hot {
-  color: #fff;
-  background: #ff6b6b;
-}
-
-.cool {
-  color: #fff;
-  background: #38bdf8;
+.temperature-tag {
+  flex: 0 0 auto;
+  margin-right: auto;
 }
 
 .weather-card__detail {

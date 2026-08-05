@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch, watchEffect } from 'vue'
+import { ElAlert, ElSkeleton } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { weatherCities } from '../../data/weatherCities.js'
 import { weatherList } from '../../data/weatherData.js'
@@ -23,6 +24,12 @@ const failedCityNames = computed(() =>
   weatherCities
     .filter((city) => failedCityIds.value.includes(city.id))
     .map((city) => city.name),
+)
+
+const fallbackMessage = computed(() =>
+  failedCityNames.value.length
+    ? `${failedCityNames.value.join(', ')}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
+    : '',
 )
 
 const filteredWeatherList = computed(() => {
@@ -120,21 +127,21 @@ const showDetail = (weather) => {
 
     <BaseDashboardCard aria-labelledby="seventh-weather-list-title">
       <h2 id="seventh-weather-list-title">🏙️ 지역별 날씨 현황</h2>
-      <p
+      <ElSkeleton
         v-if="isLoadingWeather"
-        class="weather-load-status weather-load-status--loading"
-        role="status"
-      >
-        실시간 날씨를 불러오는 중입니다.
-      </p>
-      <p
-        v-else-if="failedCityNames.length"
-        class="weather-load-status weather-load-status--fallback"
-        role="alert"
-      >
-        {{ failedCityNames.join(', ') }}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고
-        있습니다.
-      </p>
+        class="weather-load-skeleton"
+        :rows="1"
+        animated
+        aria-label="실시간 날씨를 불러오는 중입니다."
+      />
+      <ElAlert
+        v-else-if="fallbackMessage"
+        class="weather-fallback-alert"
+        :title="fallbackMessage"
+        type="warning"
+        show-icon
+        :closable="false"
+      />
       <div
         v-if="filteredWeatherList.length"
         class="weather-grid"
@@ -180,22 +187,9 @@ h2 {
   font-size: 0.9rem;
 }
 
-.weather-load-status {
+.weather-load-skeleton,
+.weather-fallback-alert {
   margin: 0 0 8px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  line-height: 1.4;
-}
-
-.weather-load-status--loading {
-  color: #1e40af;
-  background: #eff6ff;
-}
-
-.weather-load-status--fallback {
-  color: #92400e;
-  background: #fffbeb;
 }
 
 .weather-grid {

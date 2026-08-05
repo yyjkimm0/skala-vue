@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { ElAlert, ElSkeleton } from 'element-plus'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
 const weather = ref(null)
@@ -27,20 +28,21 @@ onMounted(loadSeoulWeather)
   <section class="weather-api-test">
     <h2>서울 현재 날씨 API 테스트</h2>
 
-    <p
+    <ElSkeleton
       v-if="isLoading"
-      class="weather-api-test__status weather-api-test__status--loading"
-    >
-      서울 날씨를 불러오는 중입니다.
-    </p>
+      class="weather-api-test__skeleton"
+      :rows="5"
+      animated
+      aria-label="서울 날씨를 불러오는 중입니다."
+    />
 
-    <p
+    <ElAlert
       v-else-if="errorMessage"
-      class="weather-api-test__status weather-api-test__status--error"
-      role="alert"
-    >
-      {{ errorMessage }}
-    </p>
+      :title="errorMessage"
+      type="error"
+      show-icon
+      :closable="false"
+    />
 
     <dl v-else-if="weather" class="weather-api-test__details">
       <div>
@@ -81,21 +83,8 @@ onMounted(loadSeoulWeather)
   font-size: 1rem;
 }
 
-.weather-api-test__status {
+.weather-api-test__skeleton {
   margin: 0;
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: 0.76rem;
-}
-
-.weather-api-test__status--loading {
-  color: #1e40af;
-  background: #eff6ff;
-}
-
-.weather-api-test__status--error {
-  color: #991b1b;
-  background: #fef2f2;
 }
 
 .weather-api-test__details {
