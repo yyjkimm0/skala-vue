@@ -27,8 +27,6 @@ const emit = defineEmits(['select-card', 'click-detail'])
 // 단위별 표시값만 계산하고 Tag 상태는 변환과 무관하게 원본 섭씨 25도를 기준으로 한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
-const isHot = computed(() => props.weather.temp >= 25)
-
 const selectCard = () => {
   emit('select-card', props.weather)
 }
@@ -46,14 +44,28 @@ const clickDetail = () => {
       <p class="weather-card__temperature">
         현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
+      <!-- [feature] 표시 단위와 무관하게 원본 섭씨 25℃의 초과·동일·미만을 구분한다. -->
       <div class="temperature-tag-slot">
         <ElTag
+          v-if="props.weather.temp > 25"
           class="temperature-tag"
-          :type="isHot ? 'danger' : 'primary'"
+          type="danger"
           size="small"
           effect="light"
         >
-          {{ isHot ? '🔥 더움 (25도 이상)' : '❄️ 선선함 (25도 미만)' }}
+          🔥 더움 (25도 초과)
+        </ElTag>
+        <ElTag
+          v-else-if="props.weather.temp === 25"
+          class="temperature-tag"
+          type="warning"
+          size="small"
+          effect="light"
+        >
+          🌤️ 보통 (25도)
+        </ElTag>
+        <ElTag v-else class="temperature-tag" type="success" size="small" effect="light">
+          ❄️ 선선함 (25도 미만)
         </ElTag>
       </div>
     </div>
