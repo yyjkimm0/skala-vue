@@ -6,7 +6,16 @@ import { ElCard } from 'element-plus'
 
 <template>
   <ElCard class="dashboard-card" shadow="never">
+    <!-- [refactor] 전달된 영역만 ElCard의 Named Slot으로 렌더링해 빈 레이아웃을 만들지 않는다. -->
+    <template v-if="$slots.header" #header>
+      <slot name="header" />
+    </template>
+
     <slot />
+
+    <template v-if="$slots.footer" #footer>
+      <slot name="footer" />
+    </template>
   </ElCard>
 </template>
 

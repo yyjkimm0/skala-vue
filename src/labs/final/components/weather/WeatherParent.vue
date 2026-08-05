@@ -134,7 +134,10 @@ const showDetail = (weather) => {
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="final-weather-list-title">
-      <h2 id="final-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <template #header>
+        <h2 id="final-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      </template>
+
       <ElSkeleton
         v-if="isLoadingWeather"
         class="weather-load-skeleton"
@@ -177,15 +180,17 @@ const showDetail = (weather) => {
         </WeatherCard>
       </div>
       <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
-    </BaseDashboardCard>
 
-    <div class="selection-status" role="status" aria-live="polite">
-      {{
-        selectedCityInfo
-          ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
-          : '카드를 클릭하거나 검색해 보세요.'
-      }}
-    </div>
+      <template #footer>
+        <div class="selection-status" role="status" aria-live="polite">
+          {{
+            selectedCityInfo
+              ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
+              : '카드를 클릭하거나 검색해 보세요.'
+          }}
+        </div>
+      </template>
+    </BaseDashboardCard>
   </div>
 </template>
 
