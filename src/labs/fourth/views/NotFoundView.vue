@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router'
 
 /**
  * fourth 내부의 어떤 route에도 일치하지 않는 주소를 처리한다.
+ * weather/:cityId에는 일치하지만 데이터만 없는 경우는 Detail View가 처리하므로 이 상태와 구분된다.
  * 정상적인 Home 화면으로 돌아갈 수 있도록 선언적 복귀 링크를 제공한다.
  */
 </script>

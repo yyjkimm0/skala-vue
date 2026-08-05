@@ -6,6 +6,7 @@ import { weatherList } from '../data/weatherData.js'
 
 /**
  * URL의 동적 cityId를 기준으로 Mock Data에서 상세 도시를 조회한다.
+ * Home의 선택 상태를 전달받지 않아 상세 URL 직접 접근과 새로고침에도 같은 데이터를 구성한다.
  * route 형식이 유효해도 데이터에 없는 id일 수 있으므로 View 내부에서 존재 여부를 구분한다.
  */
 const route = useRoute()
