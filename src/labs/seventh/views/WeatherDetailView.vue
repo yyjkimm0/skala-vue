@@ -1,6 +1,11 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { ElAlert, ElSkeleton } from 'element-plus'
+import {
+  ElAlert,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElSkeleton,
+} from 'element-plus'
 import { RouterLink, useRoute } from 'vue-router'
 import { findWeatherCityById } from '../data/weatherCities.js'
 import { weatherList } from '../data/weatherData.js'
@@ -70,8 +75,6 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 
 <template>
   <section class="weather-detail">
-    <h2>📊 지역별 상세 기상 관측 정보</h2>
-
     <ElSkeleton
       v-if="isLoading"
       class="weather-detail__skeleton"
@@ -90,28 +93,30 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
         :closable="false"
       />
 
-      <dl v-if="city" class="weather-detail__list">
-        <div>
-          <dt>📍 지점 지역:</dt>
-          <dd>{{ locationNames[city.id] }}</dd>
-        </div>
-        <div>
-          <dt>실시간 기온:</dt>
-          <dd>{{ displayTemperature }}{{ configStore.unitSymbol }}</dd>
-        </div>
-        <div>
-          <dt>기상 현황:</dt>
-          <dd>{{ city.status }}</dd>
-        </div>
-        <div>
-          <dt>대기 습도:</dt>
-          <dd>{{ city.humidity }}%</dd>
-        </div>
-        <div>
-          <dt>현재 풍속:</dt>
-          <dd>{{ city.windSpeed }}m/s</dd>
-        </div>
-      </dl>
+      <ElDescriptions
+        v-if="city"
+        class="weather-detail__descriptions"
+        title="📊 지역별 상세 기상 관측 정보"
+        :column="1"
+        border
+        size="small"
+      >
+        <ElDescriptionsItem label="지역">
+          {{ locationNames[city.id] }}
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="날씨 상태">
+          {{ city.status }}
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="현재 기온">
+          {{ displayTemperature }}{{ configStore.unitSymbol }}
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="습도">
+          {{ city.humidity }}%
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="풍속">
+          {{ city.windSpeed }}m/s
+        </ElDescriptionsItem>
+      </ElDescriptions>
 
       <p
         v-else
@@ -138,40 +143,13 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
   background: #fff;
 }
 
-h2 {
-  margin: 0 0 12px;
-  color: #163a63;
-  font-size: 1rem;
-}
-
 .weather-detail__skeleton,
 .weather-detail__alert {
   margin: 0 0 12px;
 }
 
-.weather-detail__list {
-  display: grid;
-  gap: 6px;
+.weather-detail__descriptions {
   margin: 0 0 12px;
-  padding: 10px;
-  border-radius: 5px;
-  background: #f1f5f9;
-}
-
-.weather-detail__list div {
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 8px;
-  min-width: 0;
-  font-size: 0.78rem;
-}
-
-dt {
-  font-weight: 700;
-}
-
-dd {
-  margin: 0;
 }
 
 .missing-city {

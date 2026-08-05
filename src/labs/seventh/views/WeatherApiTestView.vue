@@ -1,6 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { ElAlert, ElSkeleton } from 'element-plus'
+import {
+  ElAlert,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElSkeleton,
+} from 'element-plus'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
 const weather = ref(null)
@@ -44,28 +49,29 @@ onMounted(loadSeoulWeather)
       :closable="false"
     />
 
-    <dl v-else-if="weather" class="weather-api-test__details">
-      <div>
-        <dt>도시명</dt>
-        <dd>{{ weather.name }}</dd>
-      </div>
-      <div>
-        <dt>현재 기온</dt>
-        <dd>{{ weather.temp }}°C</dd>
-      </div>
-      <div>
-        <dt>날씨 설명</dt>
-        <dd>{{ weather.status }}</dd>
-      </div>
-      <div>
-        <dt>습도</dt>
-        <dd>{{ weather.humidity }}%</dd>
-      </div>
-      <div>
-        <dt>풍속</dt>
-        <dd>{{ weather.windSpeed }}m/s</dd>
-      </div>
-    </dl>
+    <ElDescriptions
+      v-else-if="weather"
+      title="OpenWeather API 응답"
+      :column="1"
+      border
+      size="small"
+    >
+      <ElDescriptionsItem label="도시명">
+        {{ weather.name }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="현재 기온">
+        {{ weather.temp }}°C
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="날씨 상태">
+        {{ weather.status }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="습도">
+        {{ weather.humidity }}%
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="풍속">
+        {{ weather.windSpeed }}m/s
+      </ElDescriptionsItem>
+    </ElDescriptions>
   </section>
 </template>
 
@@ -87,27 +93,4 @@ onMounted(loadSeoulWeather)
   margin: 0;
 }
 
-.weather-api-test__details {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 10px;
-  border-radius: 5px;
-  background: #f1f5f9;
-}
-
-.weather-api-test__details div {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 8px;
-  font-size: 0.78rem;
-}
-
-.weather-api-test__details dt {
-  font-weight: 700;
-}
-
-.weather-api-test__details dd {
-  margin: 0;
-}
 </style>
