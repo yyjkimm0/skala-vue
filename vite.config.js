@@ -5,8 +5,8 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/skala-vue/' : '/',
+export default defineConfig({
+  base: '/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -16,4 +16,4 @@ export default defineConfig(({ command }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-}))
+})
