@@ -3,6 +3,10 @@ import { onMounted, ref } from 'vue'
 import { ElAlert, ElDescriptions, ElDescriptionsItem, ElSkeleton } from 'element-plus'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
+/**
+ * Forecast와 분리된 Current Weather 연결 점검 화면으로 Mock fallback을 사용하지 않는다.
+ * loading·error·success를 배타적으로 표현하고 오류 객체나 API Key는 화면에 노출하지 않는다.
+ */
 const weather = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')

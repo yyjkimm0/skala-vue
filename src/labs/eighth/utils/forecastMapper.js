@@ -1,6 +1,7 @@
 /**
  * OpenWeather Forecast의 list를 화면이 사용할 3시간 예보 모델 배열로 변환한다.
  * optional chaining과 nullish coalescing으로 누락 가능한 응답에 안전한 기본 구조를 제공한다.
+ * Store나 View 상태를 변경하지 않고 전체 3시간 항목과 도시 현지 날짜 정보를 반환한다.
  */
 export const mapForecastResponse = (responseData, cityConfig) => {
   const forecastList = responseData?.list ?? []

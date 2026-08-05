@@ -3,6 +3,10 @@ import { computed } from 'vue'
 import { ElButton, ElTag } from 'element-plus'
 import { convertTemperature } from '../../utils/temperature.js'
 
+/**
+ * Current Weather API와 fallback이 공유하는 내부 모델을 현재 날씨 카드로 표시한다.
+ * ElTag·ElButton은 상태와 행동만 표현하며 선택과 상세 의도는 부모에 각각 emit한다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -20,6 +24,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-card', 'click-detail'])
 
+// 단위별 표시값만 계산하고 Tag 상태는 변환과 무관하게 원본 섭씨 25도를 기준으로 한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
 const isHot = computed(() => props.weather.temp >= 25)
@@ -34,6 +39,7 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드 클릭과 Enter가 같은 선택 이벤트를 사용하고 실제 선택 상태는 부모가 소유한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
@@ -51,6 +57,7 @@ const clickDetail = () => {
         </ElTag>
       </div>
     </div>
+    <!-- click.stop으로 상세 이동과 article 선택이 한 입력에서 함께 실행되지 않게 한다. -->
     <ElButton
       class="weather-card__detail"
       size="small"

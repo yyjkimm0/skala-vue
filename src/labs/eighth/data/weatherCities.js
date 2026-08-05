@@ -1,3 +1,7 @@
+/**
+ * id와 name은 카드·route·Forecast selector에, query는 OpenWeather 요청에 사용한다.
+ * 같은 설정을 Current Weather와 Forecast가 공유해 내부 식별값과 외부 도시값을 일치시킨다.
+ */
 export const weatherCities = [
   {
     id: 'city_01',

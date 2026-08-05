@@ -20,6 +20,7 @@ import { convertTemperature } from '../utils/temperature.js'
 /**
  * 전체 3시간 Forecast를 현지 날짜로 묶고 각 날짜의 정오에 가장 가까운 대표값을 만든다.
  * 대표값을 날짜순 최대 5개로 제한한 뒤 도시 선택과 전체·비 예보 필터를 화면 상태에 연결한다.
+ * Forecast는 fallback 없이 자체 loading·error·empty를 관리하고 Store 단위는 표시 단계에만 적용한다.
  */
 const configStore = useConfigStore()
 const forecasts = ref([])
