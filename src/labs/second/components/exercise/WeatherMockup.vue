@@ -65,13 +65,14 @@ const showDetail = (cityName, status) => {
   <section class="weather-mockup">
     <div class="search-panel">
       <label for="second-city-search">🔍 도시 검색</label>
-      <!-- v-model 대신 value 전달과 input 처리를 분리해 입력값이 상태로 반영되는 흐름을 드러낸다. -->
+      <!--
+        [experiment] lazy는 change 시점에 trim된 값을 반영하므로 기존 즉시 검색 UX와 다르다.
+      -->
       <input
         id="second-city-search"
-        :value="searchQuery"
+        v-model.trim.lazy="searchQuery"
         type="text"
         placeholder="도시명을 입력하세요"
-        @input="searchQuery = $event.target.value"
       />
       <p class="input-status">
         {{
