@@ -69,16 +69,15 @@ const clickDetail = () => {
         </ElTag>
       </div>
     </div>
-    <!-- click.stop으로 상세 이동과 article 선택이 한 입력에서 함께 실행되지 않게 한다. -->
-    <ElButton
-      class="weather-card__detail"
-      size="small"
-      plain
-      @click.stop="clickDetail"
-      @keydown.enter.stop
-    >
-      상세보기
-    </ElButton>
+    <!-- [refactor] 부모가 weather와 기존 상세 emit 함수로 카드별 액션 UI를 구성하게 한다. -->
+    <div class="weather-card__detail">
+      <slot name="actions" :weather="props.weather" :open-detail="clickDetail">
+        <!-- click.stop으로 상세 이동과 article 선택이 한 입력에서 함께 실행되지 않게 한다. -->
+        <ElButton size="small" plain @click.stop="clickDetail" @keydown.enter.stop>
+          상세보기
+        </ElButton>
+      </slot>
+    </div>
   </article>
 </template>
 

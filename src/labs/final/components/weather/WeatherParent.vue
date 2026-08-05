@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch, watchEffect } from 'vue'
-import { ElAlert, ElSkeleton } from 'element-plus'
+import { ElAlert, ElButton, ElSkeleton } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { weatherCities } from '../../data/weatherCities.js'
 import { weatherList } from '../../data/weatherData.js'
@@ -161,7 +161,20 @@ const showDetail = (weather) => {
           :unit-symbol="configStore.unitSymbol"
           @select-card="selectCity"
           @click-detail="showDetail"
-        />
+        >
+          <template #actions="{ weather, openDetail }">
+            <ElButton
+              type="primary"
+              size="small"
+              plain
+              :aria-label="`${weather.name} 상세보기`"
+              @click.stop="openDetail"
+              @keydown.enter.stop
+            >
+              상세보기
+            </ElButton>
+          </template>
+        </WeatherCard>
       </div>
       <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
     </BaseDashboardCard>
