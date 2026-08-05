@@ -129,9 +129,11 @@ const showDetail = (weather) => {
       <!-- Skeleton·Alert는 요청 안내 영역이고 현재 카드 또는 검색 empty 상태는 별도로 유지된다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <!-- 내부 도시 id를 key로 쓰고 Store의 표시 단위만 카드에 전달한다. -->
+        <!-- [tuning] 날씨 객체와 표시 단위가 같으면 카드 subtree를 재사용한다. -->
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
+          v-memo="[weather, configStore.unit]"
           :weather="weather"
           :unit="configStore.unit"
           :unit-symbol="configStore.unitSymbol"
