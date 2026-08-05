@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { eighthRoutes } from '../labs/eighth/router/index.js'
+import { finalRoutes } from '../labs/final/router/index.js'
 import { fifthRoutes } from '../labs/fifth/router/index.js'
 import { firstRoutes } from '../labs/first/router/index.js'
 import { fourthRoutes } from '../labs/fourth/router/index.js'
@@ -13,7 +14,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/eighth',
+      redirect: '/final',
     },
     {
       path: '/first',
@@ -64,8 +65,14 @@ const router = createRouter({
       children: eighthRoutes,
     },
     {
+      path: '/final',
+      component: () => import('../labs/final/App.vue'),
+      meta: { labId: 'final' },
+      children: finalRoutes,
+    },
+    {
       path: '/:pathMatch(.*)*',
-      redirect: '/sixth',
+      redirect: '/final',
     },
   ],
 })

@@ -47,4 +47,10 @@ export const labs = [
     title: '과제 8: API 활용',
     path: '/eighth',
   },
+  {
+    id: 'final',
+    label: '최종 실습',
+    title: '날씨 웹앱',
+    path: '/final',
+  },
 ]
