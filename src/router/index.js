@@ -3,6 +3,7 @@ import { fifthRoutes } from '../labs/fifth/router/index.js'
 import { firstRoutes } from '../labs/first/router/index.js'
 import { fourthRoutes } from '../labs/fourth/router/index.js'
 import { secondRoutes } from '../labs/second/router/index.js'
+import { seventhRoutes } from '../labs/seventh/router/index.js'
 import { sixthRoutes } from '../labs/sixth/router/index.js'
 import { thirdRoutes } from '../labs/third/router/index.js'
 
@@ -48,6 +49,12 @@ const router = createRouter({
       component: () => import('../labs/sixth/App.vue'),
       meta: { labId: 'sixth' },
       children: sixthRoutes,
+    },
+    {
+      path: '/seventh',
+      component: () => import('../labs/seventh/App.vue'),
+      meta: { labId: 'seventh' },
+      children: seventhRoutes,
     },
     {
       path: '/:pathMatch(.*)*',
