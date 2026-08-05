@@ -6,11 +6,16 @@ import { weatherList } from '../data/weatherData.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * route param으로 찾은 섭씨 Mock Data를 현재 Store 단위에 맞춰 표시한다.
+ * route가 바뀌어 View가 교체돼도 같은 Store 인스턴스를 사용하므로 목록의 단위가 유지된다.
+ */
 const route = useRoute()
 const configStore = useConfigStore()
 
 const city = computed(() => weatherList.find((weather) => weather.id === route.params.cityId))
 
+// 도시가 존재할 때만 원본값을 현재 표시 단위로 변환하며 데이터 자체는 수정하지 않는다.
 const displayTemperature = computed(() => {
   if (!city.value) {
     return null

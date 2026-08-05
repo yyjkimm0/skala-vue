@@ -9,7 +9,13 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * fourth의 Router 구조를 유지하면서 Pinia의 전역 표시 단위를 목록에 연결한 단계다.
+ * Mock Data의 섭씨 원본값은 보존하고 Store 단위에 맞춘 값만 화면에 전달한다.
+ * 외부 API 연동은 아직 도입하지 않는다.
+ */
 const router = useRouter()
+// 최상위 Pinia 컨텍스트에서 UnitToggler와 상세 View가 사용하는 동일 Store에 접근한다.
 const configStore = useConfigStore()
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
@@ -24,6 +30,7 @@ const filteredWeatherList = computed(() => {
   return weatherList.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
 })
 
+// 선택 상태바도 카드와 같은 단위 정책을 따르도록 섭씨 원본에서 표시값만 계산한다.
 const selectedTemperature = computed(() => {
   if (!selectedCityInfo.value) {
     return null
@@ -75,6 +82,7 @@ watchEffect(() => {
       <h2 id="fifth-weather-list-title">🏙️ 지역별 날씨 현황</h2>
 
       <div v-if="filteredWeatherList.length" class="weather-grid">
+        <!-- Store에서 읽은 단위와 기호를 각 카드에 내려 동일한 표시 정책을 적용한다. -->
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"

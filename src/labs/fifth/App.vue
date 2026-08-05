@@ -2,6 +2,11 @@
 import { RouterLink, RouterView } from 'vue-router'
 import UnitToggler from './components/weather/UnitToggler.vue'
 import './assets/lab.css'
+
+/**
+ * fourth의 route shell에 전역 단위 전환 UI를 추가한다.
+ * Pinia는 최상위 앱에서 한 번 설치되며 fifth의 View들은 같은 config Store를 공유한다.
+ */
 </script>
 
 <template>

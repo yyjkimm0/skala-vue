@@ -1,3 +1,4 @@
+/* fifth route 화면 전체의 폭과 중앙 배치 */
 .fifth-lab {
   width: 100%;
   max-width: 460px;
@@ -5,6 +6,7 @@
   margin: 0 auto;
 }
 
+/* route 링크와 전역 단위 토글을 함께 배치하는 navigation */
 .fifth-lab .app-navigation {
   display: flex;
   align-items: center;
@@ -40,6 +42,7 @@
   color: #1d4ed8;
 }
 
+/* 작은 화면에서는 링크와 단위 토글을 세로로 배치한다. */
 @media (max-width: 340px) {
   .fifth-lab .app-navigation {
     align-items: flex-start;

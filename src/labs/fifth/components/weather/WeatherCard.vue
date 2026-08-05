@@ -3,6 +3,10 @@ import { computed } from 'vue'
 
 import { convertTemperature } from '../../utils/temperature.js'
 
+/**
+ * 부모가 전달한 표시 단위를 사용해 카드의 섭씨 원본 기온을 화면용 값으로 변환한다.
+ * 단위가 바뀌어도 weather 객체와 원본 temp는 변경하지 않는다.
+ */
 const props = defineProps({
   weather: {
     type: Object,
@@ -20,6 +24,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-card', 'click-detail'])
 
+// unit prop이 바뀌면 표시값만 다시 계산되며 더움·선선함 기준은 원본 섭씨값을 유지한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
 const selectCard = () => {
