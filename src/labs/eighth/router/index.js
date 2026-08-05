@@ -5,6 +5,7 @@ export const eighthRoutes = [
     component: () => import('../views/WeatherHomeView.vue'),
   },
   {
+    // 현재 날씨 route와 분리된 Forecast 화면에서 향후 3시간 간격 예보 배열을 다룬다.
     path: 'forecast',
     name: 'eighth-weather-forecast',
     component: () => import('../views/WeatherForecastView.vue'),

@@ -31,6 +31,10 @@ export const fetchCurrentWeather = async (city) => {
   return mapOpenWeatherToWeather(response.data, cityConfig)
 }
 
+/**
+ * 선택 도시의 5일 범위·3시간 간격 Forecast를 별도 endpoint에서 요청한다.
+ * 전체 응답은 mapper에서 도시 현지 시간 기반 내부 예보 배열로 바꿔 반환하며 오류는 호출자에게 전달한다.
+ */
 export const fetchWeatherForecast = async (cityConfig) => {
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
@@ -51,5 +55,6 @@ export const fetchWeatherForecast = async (cityConfig) => {
     },
   })
 
+  // Current Weather의 한 시점 객체와 달리 Forecast는 여러 시점의 내부 모델 배열을 반환한다.
   return mapForecastResponse(response.data, cityConfig)
 }

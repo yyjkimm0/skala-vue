@@ -3,6 +3,12 @@ import { RouterLink, RouterView } from 'vue-router'
 import UnitToggler from './components/weather/UnitToggler.vue'
 import 'element-plus/dist/index.css'
 import './assets/lab.css'
+
+/**
+ * seventh의 Router·Pinia·Axios·Element Plus 구조에 5일·3시간 Forecast 화면을 추가한다.
+ * 3시간 예보를 날짜별 대표 카드로 가공하고 도시 선택과 전체·비 예보 필터를 제공한다.
+ * 선택 날짜의 별도 상세 route는 아직 도입하지 않는다.
+ */
 </script>
 
 <template>
