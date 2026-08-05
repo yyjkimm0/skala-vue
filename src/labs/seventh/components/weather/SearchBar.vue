@@ -34,10 +34,7 @@ const handleNativeInput = (event) => {
 <template>
   <div class="search-bar">
     <label for="seventh-city-search">🔍 도시 검색</label>
-    <div
-      class="search-input-wrapper"
-      @input.capture="handleNativeInput"
-    >
+    <div class="search-input-wrapper" @input.capture="handleNativeInput">
       <ElInput
         id="seventh-city-search"
         class="search-input"

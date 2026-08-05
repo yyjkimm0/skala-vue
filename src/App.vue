@@ -9,9 +9,7 @@ const route = useRoute()
 const router = useRouter()
 
 const currentLabId = computed(() => route.meta.labId ?? 'sixth')
-const currentLab = computed(
-  () => labs.find((lab) => lab.id === currentLabId.value) ?? labs[5],
-)
+const currentLab = computed(() => labs.find((lab) => lab.id === currentLabId.value) ?? labs[5])
 
 const changeLab = async (labId) => {
   const lab = labs.find((item) => item.id === labId)
@@ -27,11 +25,7 @@ const changeLab = async (labId) => {
     <section class="lab-frame">
       <header class="lab-header">
         <h1>⛅ {{ currentLab.title }}</h1>
-        <LabSelector
-          :labs="labs"
-          :model-value="currentLabId"
-          @update:model-value="changeLab"
-        />
+        <LabSelector :labs="labs" :model-value="currentLabId" @update:model-value="changeLab" />
       </header>
 
       <div class="lab-content">

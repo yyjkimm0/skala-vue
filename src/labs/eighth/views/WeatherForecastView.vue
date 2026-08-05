@@ -68,8 +68,7 @@ const dailyForecasts = computed(() =>
 )
 
 const isRainyForecast = (forecast) =>
-  forecast.status.includes('비') ||
-  forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
+  forecast.status.includes('비') || forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
 
 const visibleForecasts = computed(() => {
   const source = [...dailyForecasts.value]
@@ -87,11 +86,9 @@ const formatLocalDate = (localDate) => {
   return `${year}년 ${Number(month)}월 ${Number(day)}일`
 }
 
-const formatLocalTime = (localDateTime) =>
-  localDateTime?.split(' ')[1] ?? '정보 없음'
+const formatLocalTime = (localDateTime) => localDateTime?.split(' ')[1] ?? '정보 없음'
 
-const displayTemperature = (temperature) =>
-  convertTemperature(temperature, configStore.unit)
+const displayTemperature = (temperature) => convertTemperature(temperature, configStore.unit)
 
 const toPercentage = (probability) =>
   Math.min(100, Math.max(0, Math.round((probability ?? 0) * 100)))
@@ -130,9 +127,7 @@ watch(selectedCityId, loadForecast, { immediate: true })
       <template #header>
         <div class="forecast-panel__header">
           <h2>{{ selectedCity.name }} 5일 단기 예보</h2>
-          <p>
-            3시간 간격 예보에서 날짜별 정오에 가장 가까운 항목을 표시합니다.
-          </p>
+          <p>3시간 간격 예보에서 날짜별 정오에 가장 가까운 항목을 표시합니다.</p>
         </div>
       </template>
 

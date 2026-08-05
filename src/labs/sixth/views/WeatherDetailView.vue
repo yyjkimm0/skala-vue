@@ -71,11 +71,7 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
   <section class="weather-detail">
     <h2>📊 지역별 상세 기상 관측 정보</h2>
 
-    <p
-      v-if="isLoading"
-      class="weather-detail__loading"
-      role="status"
-    >
+    <p v-if="isLoading" class="weather-detail__loading" role="status">
       상세 날씨를 불러오는 중입니다.
     </p>
 
@@ -107,18 +103,10 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
         </div>
       </dl>
 
-      <p
-        v-else
-        class="missing-city"
-      >
-        해당 도시 정보를 찾을 수 없습니다.
-      </p>
+      <p v-else class="missing-city">해당 도시 정보를 찾을 수 없습니다.</p>
     </template>
 
-    <RouterLink
-      class="back-link"
-      :to="{ name: 'sixth-weather-home' }"
-    >
+    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>

@@ -16,8 +16,7 @@ export const weatherCities = [
   },
 ]
 
-export const findWeatherCityById = (cityId) =>
-  weatherCities.find((city) => city.id === cityId)
+export const findWeatherCityById = (cityId) => weatherCities.find((city) => city.id === cityId)
 
 export const findWeatherCityByQueryName = (queryName) =>
   weatherCities.find((city) => city.query.split(',')[0] === queryName)

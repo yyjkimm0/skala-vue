@@ -21,9 +21,7 @@ const isLoadingWeather = ref(false)
 const failedCityIds = ref([])
 
 const failedCityNames = computed(() =>
-  weatherCities
-    .filter((city) => failedCityIds.value.includes(city.id))
-    .map((city) => city.name),
+  weatherCities.filter((city) => failedCityIds.value.includes(city.id)).map((city) => city.name),
 )
 
 const fallbackMessage = computed(() =>
@@ -71,9 +69,7 @@ const loadWeather = async () => {
     const mockWeatherById = new Map(weatherList.map((weather) => [weather.id, weather]))
 
     weatherItems.value = results.map((result, index) =>
-      result.status === 'fulfilled'
-        ? result.value
-        : mockWeatherById.get(weatherCities[index].id),
+      result.status === 'fulfilled' ? result.value : mockWeatherById.get(weatherCities[index].id),
     )
 
     failedCityIds.value = results.flatMap((result, index) =>
@@ -119,10 +115,7 @@ const showDetail = (weather) => {
 <template>
   <div class="weather-mockup">
     <BaseDashboardCard>
-      <SearchBar
-        :search-query="searchQuery"
-        @update-query="updateSearchQuery"
-      />
+      <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="seventh-weather-list-title">
@@ -142,10 +135,7 @@ const showDetail = (weather) => {
         show-icon
         :closable="false"
       />
-      <div
-        v-if="filteredWeatherList.length"
-        class="weather-grid"
-      >
+      <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
@@ -156,12 +146,7 @@ const showDetail = (weather) => {
           @click-detail="showDetail"
         />
       </div>
-      <p
-        v-else
-        class="empty-state"
-      >
-        검색 결과와 일치하는 도시가 없습니다.
-      </p>
+      <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
     </BaseDashboardCard>
 
     <div class="selection-status" role="status" aria-live="polite">

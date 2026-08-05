@@ -21,9 +21,7 @@ const filteredWeatherList = computed(() => {
     return weatherList.value
   }
 
-  return weatherList.value.filter((weather) =>
-    weather.name.toLowerCase().includes(normalizedQuery),
-  )
+  return weatherList.value.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
 })
 
 const updateSearchQuery = (value) => {
@@ -57,19 +55,13 @@ watchEffect(() => {
 <template>
   <div class="weather-mockup">
     <BaseDashboardCard>
-      <SearchBar
-        :search-query="searchQuery"
-        @update-query="updateSearchQuery"
-      />
+      <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="third-weather-list-title">
       <h2 id="third-weather-list-title">🏙️ 지역별 날씨 현황</h2>
 
-      <div
-        v-if="filteredWeatherList.length"
-        class="weather-grid"
-      >
+      <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
@@ -79,12 +71,7 @@ watchEffect(() => {
         />
       </div>
 
-      <p
-        v-else
-        class="empty-state"
-      >
-        검색 결과와 일치하는 도시가 없습니다.
-      </p>
+      <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
     </BaseDashboardCard>
 
     <div class="selection-status" role="status" aria-live="polite">

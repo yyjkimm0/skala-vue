@@ -9,9 +9,7 @@ import { convertTemperature } from '../utils/temperature.js'
 const route = useRoute()
 const configStore = useConfigStore()
 
-const city = computed(() =>
-  weatherList.find((weather) => weather.id === route.params.cityId),
-)
+const city = computed(() => weatherList.find((weather) => weather.id === route.params.cityId))
 
 const displayTemperature = computed(() => {
   if (!city.value) {
@@ -26,10 +24,7 @@ const displayTemperature = computed(() => {
   <section class="weather-detail">
     <h2>📊 지역별 상세 기상 관측 정보</h2>
 
-    <dl
-      v-if="city"
-      class="weather-detail__list"
-    >
+    <dl v-if="city" class="weather-detail__list">
       <div>
         <dt>지역</dt>
         <dd>{{ city.name }}</dd>
@@ -52,17 +47,9 @@ const displayTemperature = computed(() => {
       </div>
     </dl>
 
-    <p
-      v-else
-      class="missing-city"
-    >
-      해당 도시 정보를 찾을 수 없습니다.
-    </p>
+    <p v-else class="missing-city">해당 도시 정보를 찾을 수 없습니다.</p>
 
-    <RouterLink
-      class="back-link"
-      :to="{ name: 'fifth-weather-home' }"
-    >
+    <RouterLink class="back-link" :to="{ name: 'fifth-weather-home' }">
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>
