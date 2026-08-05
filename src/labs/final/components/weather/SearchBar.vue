@@ -1,6 +1,10 @@
 <script setup>
 import { ElInput } from 'element-plus'
 
+/**
+ * ElInput은 부모가 소유한 검색어를 표시하고 model update·clear 값을 같은 emit으로 전달한다.
+ * Router·Store·API를 모르며 검색 상태나 전달받은 prop을 직접 변경하지 않는다.
+ */
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -10,6 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update-query'])
 
+// model과 native 입력 경로가 같은 값을 연속 전달하면 현재 prop과 비교해 중복 emit을 생략한다.
 const emitQuery = (value) => {
   if (typeof value !== 'string' || value === props.searchQuery) {
     return
@@ -25,6 +30,7 @@ const handleModelValueUpdate = (value) => {
 const handleNativeInput = (event) => {
   const target = event.target
 
+  // capture 단계에서 실제 input 값을 읽어 한글 조합 중 화면에 보이는 문자열도 부모에 반영한다.
   if (target instanceof HTMLInputElement) {
     emitQuery(target.value)
   }

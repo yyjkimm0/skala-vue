@@ -19,9 +19,9 @@ import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
 /**
- * 날짜별 대표 Forecast를 표시하고 선택한 도시와 날짜를 상세 route params로 전달한다.
+ * 선택 도시의 전체 3시간 Forecast를 날짜별 대표 카드로 만들고 상세 route 진입을 담당한다.
  * 목록의 도시 선택은 query와 동기화해 상세 화면에서 돌아오거나 URL로 진입해도 복원한다.
- * 날짜별 그룹화와 대표값 생성은 eighth와 같은 데이터 가공 흐름을 유지한다.
+ * query·필터·요청은 이 View의 로컬 상태이고 여러 final 화면과 공유할 단위만 Store에서 읽는다.
  */
 const configStore = useConfigStore()
 const route = useRoute()
@@ -41,10 +41,12 @@ const getQueryCityId = (queryCityId) => {
   return typeof cityId === 'string' && findWeatherCityById(cityId) ? cityId : DEFAULT_CITY_ID
 }
 
+// query에는 API 검색 문자열이 아니라 목록 복원에 필요한 앱 내부 cityId만 저장한다.
 const selectedCityId = ref(getQueryCityId(route.query.cityId))
 
 const selectedCity = computed(() => findWeatherCityById(selectedCityId.value))
 
+// 전체 3시간 배열을 원본 그대로 둔 채 localDate별 새 배열로 그룹화한다.
 const forecastsByDate = computed(() =>
   forecasts.value.reduce((groups, forecast) => {
     const dateForecasts = groups[forecast.localDate] ?? []
@@ -56,6 +58,7 @@ const forecastsByDate = computed(() =>
   }, {}),
 )
 
+// 각 날짜에서 도시 현지 12시에 가장 가까운 한 시점을 목록 대표값으로 선택한다.
 const selectRepresentativeForecast = (dateForecasts) =>
   dateForecasts.reduce((closest, forecast) => {
     if (!closest) {
@@ -68,6 +71,7 @@ const selectRepresentativeForecast = (dateForecasts) =>
     return currentDistance < closestDistance ? forecast : closest
   }, null)
 
+// 대표값 생성 후 날짜순 정렬하고 상세로 진입할 최대 5일만 목록에 남긴다.
 const dailyForecasts = computed(() =>
   Object.entries(forecastsByDate.value)
     .map(([localDate, dateForecasts]) => {
@@ -88,6 +92,7 @@ const isRainyForecast = (forecast) =>
   forecast.status.includes('비') || forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
 
 const visibleForecasts = computed(() => {
+  // 비 필터는 상세 시간 흐름이 아니라 날짜별 대표 카드에만 적용한다.
   const source = [...dailyForecasts.value]
 
   if (forecastFilter.value === 'rainy') {
@@ -149,6 +154,7 @@ const toPercentage = (probability) =>
   Math.min(100, Math.max(0, Math.round((probability ?? 0) * 100)))
 
 const loadForecast = async () => {
+  // 빠른 도시 전환에서는 최신 요청 결과와 loading 종료만 목록 상태에 반영한다.
   const requestId = ++latestRequestId
   const cityConfig = selectedCity.value
 
@@ -228,6 +234,7 @@ watch(
         </ElRadioGroup>
       </div>
 
+      <!-- loading → error → 원본 empty → 필터 empty → 대표 카드 순서로 상태를 구분한다. -->
       <ElSkeleton
         v-if="isLoading"
         :rows="4"

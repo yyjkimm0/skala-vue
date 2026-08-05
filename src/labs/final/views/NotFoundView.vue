@@ -1,5 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+
+/** 등록된 Current Weather·Forecast route에 해당하지 않는 final 하위 주소를 catch-all에서 안내한다. */
 </script>
 
 <template>

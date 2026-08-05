@@ -1,6 +1,7 @@
 /**
- * eighth의 3시간 예보 모델에 OpenWeather 아이콘 코드를 포함한다.
- * 상세 View는 이 값으로 아이콘을 요청하며 원본 날씨 문구는 대체 표시에도 함께 사용한다.
+ * Forecast list를 도시 현지 날짜·시간과 날씨 필드를 가진 3시간 내부 모델 배열로 변환한다.
+ * 목록은 날짜 대표값 계산에, 상세는 시간순 카드에 같은 모델과 OpenWeather icon을 사용한다.
+ * 원본 응답과 View·Store 상태는 변경하지 않는 순수 변환이다.
  */
 export const mapForecastResponse = (responseData, cityConfig) => {
   const forecastList = responseData?.list ?? []
@@ -34,6 +35,7 @@ export const mapForecastResponse = (responseData, cityConfig) => {
     const id = `${cityConfig.id}-${dateTime ?? dt}`
     const cityId = cityConfig.id
     const cityName = cityConfig.name
+    // UTC timestamp와 API timezone offset을 결합해 사용자 PC와 무관한 도시 현지 시각을 만든다.
     const localIsoString = Number.isFinite(dt)
       ? new Date((dt + timezoneOffset) * 1000).toISOString()
       : ''

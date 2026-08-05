@@ -1,3 +1,7 @@
+/**
+ * 최상위 Router가 /final 아래에 결합하는 final 전용 상대 route 배열이다.
+ * Current Weather·Forecast 목록·Forecast 상세를 독립 View로 두고 catch-all을 마지막에 배치한다.
+ */
 export const finalRoutes = [
   {
     path: '',
@@ -23,11 +27,13 @@ export const finalRoutes = [
     component: () => import('../views/WeatherAboutView.vue'),
   },
   {
+    // 유효하지 않은 cityId도 경로에는 매칭되고 Current Weather Detail이 도시 유효성을 판단한다.
     path: 'weather/:cityId',
     name: 'final-weather-detail',
     component: () => import('../views/WeatherDetailView.vue'),
   },
   {
+    // 대시보드 fallback과 분리해 실제 Current Weather 연결만 확인한다.
     path: 'api-test',
     name: 'final-weather-api-test',
     component: () => import('../views/WeatherApiTestView.vue'),

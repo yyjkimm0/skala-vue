@@ -12,6 +12,7 @@ import { convertTemperature } from '../utils/temperature.js'
  * route의 도시와 날짜로 Forecast를 다시 요청하고 해당 날짜의 실제 3시간 예보를 시간순으로 표시한다.
  * 목록 메모리에 의존하지 않아 상세 URL 직접 접근과 새로고침에서도 화면을 구성할 수 있다.
  * 도시 현지 기준 오늘이면 현재·다음·마지막 예보 우선순위로 가로 목록의 초점을 정한다.
+ * 요청·icon 오류·DOM 스크롤은 로컬 상태이며 전역 Store에서는 표시 단위만 공유한다.
  */
 const route = useRoute()
 const router = useRouter()
@@ -90,6 +91,7 @@ const getWeatherFallbackLabel = (status) => {
 
 const hasWeatherIcon = (forecast) => Boolean(forecast.icon) && !failedIconIds.value.has(forecast.id)
 
+// 카드별 이미지 실패 id만 로컬 Set에 기록해 다른 예보 아이콘에는 영향을 주지 않는다.
 const handleWeatherIconError = (forecastId) => {
   failedIconIds.value.add(forecastId)
 }
@@ -155,7 +157,8 @@ const nextForecastIndex = computed(() => {
   return selectedDateForecasts.value.findIndex((forecast) => forecast.timestamp > nowTimestamp)
 })
 
-// 자동 초점은 현재 블록, 다음 예보, 오늘의 마지막 예보 순이며 다른 날짜에는 적용하지 않는다.
+// 자동 초점은 현재 블록, 다음 예보, 오늘의 마지막 실제 예보 순이며 다른 날짜에는 적용하지 않는다.
+// 마지막 fallback은 위치만 맞추고 현재·다음 배지나 aria-current를 부여하지 않는다.
 const focusForecastIndex = computed(() => {
   if (selectedLocalDate.value !== getCityLocalToday() || !selectedDateForecasts.value.length) {
     return -1
@@ -333,7 +336,8 @@ watch([cityId, selectedLocalDate], loadForecastDetail, { immediate: true })
         aria-label="선택 날짜의 3시간 간격 예보"
         tabindex="0"
       >
-        <!-- 카드는 클릭 대상이 아닌 시간축 정보이며 현재 블록만 aria-current로 표시한다. -->
+        <!-- 클릭 대상이 아닌 시간축 카드로, 시각·icon·강수확률·기온만 빠르게 비교한다. -->
+        <!-- 현재 블록만 aria-current를 사용하고 다음 예보는 별도 class와 배지로 구분한다. -->
         <ElCard
           v-for="(forecast, index) in selectedDateForecasts"
           :key="forecast.id"
