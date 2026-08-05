@@ -201,11 +201,30 @@ Forecast 캐시는 View의 loading, error, fallback 상태를 소유하지 않�
 
 ## 15. 주석 태그
 
-- `[experiment]`: 동작 비교를 위해 유지한 second의 `.lazy` 입력 지점을 표시한다.
-- `[feature]`: 원본 섭씨 25℃를 기준으로 추가한 3단계 라벨을 표시한다.
-- `[refactor]`: Slot과 Composable로 책임을 분리한 지점을 표시한다.
-- `[fix]`: Slot 확장 이후 발생한 UI 정렬 회귀 수정 지점을 표시한다.
-- `[tuning]`: `v-memo`, Forecast TTL, in-flight Promise 공유 지점을 표시한다.
+이번 작업에서는 코드 변경의 목적을 빠르게 구분할 수 있도록 주요 변경 위치에 다음 태그를 사용했다.
+
+| 태그 | 의미 | 사용 예시 |
+| --- | --- | --- |
+| `[experiment]` | 동작을 비교하거나 학습하기 위한 실험 | `v-model.trim.lazy` 입력 반영 시점 비교 |
+| `[feature]` | 사용자에게 보이는 기능 추가 | 3단계 온도 상태 라벨 |
+| `[refactor]` | 동작은 유지하면서 책임과 구조 개선 | Named/Scoped Slot, `useWeatherSearch` 분리 |
+| `[fix]` | 기능 또는 UI 회귀 수정 | 제목 간격과 상태 Tag 위치 복원 |
+| `[tuning]` | 불필요한 렌더링이나 네트워크 요청 감소 | `v-memo`, Forecast 캐시와 Promise 공유 |
+| `[measure]` | 성능 측정을 위한 임시 코드 | `onUpdated`, `console.count` |
+
+`[measure]`는 측정 과정에서만 사용했으며 최종 소스에는 남기지 않았다.
+
+태그는 변경 내용을 대신 설명하는 단순 라벨이 아니라 해당 코드가 왜 추가되었고 어떤 동작을 의도하는지 설명하는 주석과 함께 사용했다.
+
+```vue
+<!-- [tuning] 날씨 객체와 표시 단위가 같으면 카드 subtree를 재사용한다. -->
+```
+
+```js
+// [tuning] 같은 도시의 요청이 진행 중이면 기존 Promise를 반환한다.
+```
+
+최종 소스에서 확인 가능한 태그는 `[experiment]`, `[feature]`, `[refactor]`, `[fix]`, `[tuning]`이다.
 
 임시 측정용 `[measure]`, `console.count`, `onUpdated`는 최종 코드에 남아 있지 않다. 원복한 watch immediate 실험 태그도 남아 있지 않다.
 
@@ -249,4 +268,3 @@ Forecast 캐시는 View의 loading, error, fallback 상태를 소유하지 않�
 - 렌더링·캐시 동작 자동 테스트
 
 이번 작업은 교수님 실습 범위와 현재 앱의 책임 분리를 확인하는 데 집중했다. 캐시 정책과 요청 취소까지 동시에 확장하면 오류·fallback·늦은 응답 처리의 검증 범위가 크게 늘어나므로 후속 작업으로 남겼다.
-
