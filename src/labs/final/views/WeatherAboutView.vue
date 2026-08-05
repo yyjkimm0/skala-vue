@@ -16,11 +16,17 @@ import { RouterLink } from 'vue-router'
       <li>API 실패 도시의 Mock Data fallback</li>
       <li>Element Plus를 적용한 일관된 사용자 인터페이스</li>
       <li>서울·수원·부산의 5일 단기 예보 조회</li>
+      <li>날짜 카드 선택을 통한 3시간 간격 상세 예보 조회</li>
     </ul>
 
     <p>
       현재 날씨와 단기 예보는 OpenWeather API를 사용하며, 3시간 간격 예보를 날짜별 대표 예보로
       표시합니다. API Key는 환경변수로 관리합니다.
+    </p>
+    <hr />
+    <p>
+      카드 렌더링과 Forecast 요청을 최적화했으며, 상세한 적용 과정과 측정 결과는
+      <code>docs/final-weather-tuning.md</code>에 기록했습니다.
     </p>
 
     <RouterLink class="back-link" :to="{ name: 'final-weather-home' }">

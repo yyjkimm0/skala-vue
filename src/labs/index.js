@@ -53,7 +53,7 @@ export const labs = [
   },
   {
     id: 'final',
-    label: '최종 실습',
+    label: '최종 결과물',
     title: '날씨 웹앱',
     path: '/final',
   },
