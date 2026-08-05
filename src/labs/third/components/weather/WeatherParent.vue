@@ -5,12 +5,18 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * second의 단일 컴포넌트를 부모와 표현·입력 자식으로 분리한 단계다.
+ * 부모가 상태와 흐름을 소유하고 자식은 props로 값을 받아 emit으로 사용자 의도를 전달한다.
+ * 상세 Router·Pinia·API 연동 전의 Mock Data 구조는 유지한다.
+ */
 const weatherList = ref([
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
   { id: 'city_02', name: '수원', temp: 24, status: '비' },
   { id: 'city_03', name: '부산', temp: 26, status: '구름' },
 ])
 
+// 검색어와 선택 객체를 부모에서 관리해 여러 자식과 상태 안내가 같은 값을 사용하게 한다.
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 
@@ -25,6 +31,7 @@ const filteredWeatherList = computed(() => {
 })
 
 const updateSearchQuery = (value) => {
+  // SearchBar가 전달한 새 입력을 부모 상태에 반영하면 계산된 목록이 자식 카드로 다시 내려간다.
   searchQuery.value = value
 }
 
@@ -33,6 +40,7 @@ const selectCity = (weather) => {
 }
 
 const showDetail = (weather) => {
+  // WeatherCard는 의도만 전달하고, 현재 단계의 alert 후속 동작은 부모가 결정한다.
   window.alert(`${weather.name}의 현재 날씨는 [${weather.status}] 상태입니다.`)
 }
 
@@ -54,6 +62,7 @@ watchEffect(() => {
 
 <template>
   <div class="weather-mockup">
+    <!-- 부모 상태가 props로 내려가고 입력 이벤트가 부모 handler로 올라오는 단방향 흐름이다. -->
     <BaseDashboardCard>
       <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
@@ -85,6 +94,7 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+/* 부모가 조합하는 패널 간 배치와 검색 결과 상태 */
 .weather-mockup {
   display: grid;
   gap: 10px;
@@ -113,6 +123,7 @@ h2 {
   text-align: center;
 }
 
+/* 부모가 소유한 선택 결과 상태바 */
 .selection-status {
   margin: 0;
   padding: 9px 10px;

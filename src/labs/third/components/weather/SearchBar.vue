@@ -1,4 +1,6 @@
 <script setup>
+/** 부모가 소유한 검색어를 표시하고 새 입력값을 이벤트로 돌려주는 입력 컴포넌트다. */
+// prop은 읽기 전용 입력이므로 SearchBar가 직접 바꾸지 않고 부모에 변경 의도를 알린다.
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -6,6 +8,7 @@ const props = defineProps({
   },
 })
 
+// 부모는 이 이벤트의 payload를 받아 실제 searchQuery 상태를 갱신한다.
 const emit = defineEmits(['update-query'])
 
 const handleInput = (event) => {
@@ -34,6 +37,7 @@ const handleInput = (event) => {
 </template>
 
 <style scoped>
+/* 검색 입력과 상태 안내 스타일은 이 컴포넌트 내부에만 한정된다. */
 .search-bar {
   display: grid;
   gap: 7px;

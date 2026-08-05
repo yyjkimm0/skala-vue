@@ -1,3 +1,4 @@
+/* third lab 전체의 폭과 중앙 배치만 담당하며 컴포넌트 내부 스타일은 각 scoped CSS가 맡는다. */
 .third-lab {
   width: 100%;
   max-width: 460px;
