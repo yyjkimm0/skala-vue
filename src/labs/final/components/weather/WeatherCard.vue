@@ -45,7 +45,7 @@ const clickDetail = () => {
         현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
       <!-- [feature] 표시 단위와 무관하게 원본 섭씨 25℃의 초과·동일·미만을 구분한다. -->
-      <div class="temperature-tag-slot">
+      <div class="weather-card__temperature-status">
         <ElTag
           v-if="props.weather.temp > 25"
           class="temperature-tag"
@@ -125,11 +125,12 @@ h3 {
   font-size: 0.78rem;
 }
 
-.temperature-tag-slot {
-  display: flex;
+/* [fix] Mock/API 교체 중에도 모든 상태 Tag를 같은 왼쪽 셀에 고정한다. */
+.weather-card__temperature-status {
+  display: grid;
   align-self: stretch;
   align-items: center;
-  justify-content: flex-start;
+  justify-items: start;
   width: 100%;
   min-height: 24px;
   margin-top: 5px;
@@ -137,8 +138,10 @@ h3 {
 }
 
 .temperature-tag {
-  flex: 0 0 auto;
+  grid-area: 1 / 1;
+  justify-self: start;
   margin-right: auto;
+  transition: none;
 }
 
 .weather-card__detail {
