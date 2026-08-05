@@ -27,8 +27,6 @@ const emit = defineEmits(['select-card', 'click-detail'])
 // 단위별 표시값만 계산하고 Tag 상태는 변환과 무관하게 원본 섭씨 25도를 기준으로 한다.
 const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
-const isHot = computed(() => props.weather.temp >= 25)
-
 const selectCard = () => {
   emit('select-card', props.weather)
 }
@@ -46,27 +44,40 @@ const clickDetail = () => {
       <p class="weather-card__temperature">
         현재 기온: {{ displayTemperature }}{{ props.unitSymbol }}
       </p>
-      <div class="temperature-tag-slot">
+      <!-- [feature] 표시 단위와 무관하게 원본 섭씨 25℃의 초과·동일·미만을 구분한다. -->
+      <div class="weather-card__temperature-status">
         <ElTag
+          v-if="props.weather.temp > 25"
           class="temperature-tag"
-          :type="isHot ? 'danger' : 'primary'"
+          type="danger"
           size="small"
           effect="light"
         >
-          {{ isHot ? '🔥 더움 (25도 이상)' : '❄️ 선선함 (25도 미만)' }}
+          🔥 더움 (25도 초과)
+        </ElTag>
+        <ElTag
+          v-else-if="props.weather.temp === 25"
+          class="temperature-tag"
+          type="warning"
+          size="small"
+          effect="light"
+        >
+          🌤️ 보통 (25도)
+        </ElTag>
+        <ElTag v-else class="temperature-tag" type="success" size="small" effect="light">
+          ❄️ 선선함 (25도 미만)
         </ElTag>
       </div>
     </div>
-    <!-- click.stop으로 상세 이동과 article 선택이 한 입력에서 함께 실행되지 않게 한다. -->
-    <ElButton
-      class="weather-card__detail"
-      size="small"
-      plain
-      @click.stop="clickDetail"
-      @keydown.enter.stop
-    >
-      상세보기
-    </ElButton>
+    <!-- [refactor] 부모가 weather와 기존 상세 emit 함수로 카드별 액션 UI를 구성하게 한다. -->
+    <div class="weather-card__detail">
+      <slot name="actions" :weather="props.weather" :open-detail="clickDetail">
+        <!-- click.stop으로 상세 이동과 article 선택이 한 입력에서 함께 실행되지 않게 한다. -->
+        <ElButton size="small" plain @click.stop="clickDetail" @keydown.enter.stop>
+          상세보기
+        </ElButton>
+      </slot>
+    </div>
   </article>
 </template>
 
@@ -114,11 +125,12 @@ h3 {
   font-size: 0.78rem;
 }
 
-.temperature-tag-slot {
-  display: flex;
+/* [fix] Mock/API 교체 중에도 모든 상태 Tag를 같은 왼쪽 셀에 고정한다. */
+.weather-card__temperature-status {
+  display: grid;
   align-self: stretch;
   align-items: center;
-  justify-content: flex-start;
+  justify-items: start;
   width: 100%;
   min-height: 24px;
   margin-top: 5px;
@@ -126,8 +138,10 @@ h3 {
 }
 
 .temperature-tag {
-  flex: 0 0 auto;
+  grid-area: 1 / 1;
+  justify-self: start;
   margin-right: auto;
+  transition: none;
 }
 
 .weather-card__detail {

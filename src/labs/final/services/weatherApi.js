@@ -2,6 +2,7 @@ import axios from 'axios'
 import { findWeatherCityByQueryName } from '../data/weatherCities.js'
 import { mapForecastResponse } from '../utils/forecastMapper.js'
 import { mapOpenWeatherToWeather } from '../utils/weatherMapper.js'
+import { getCachedWeatherForecast } from './forecastCache.js'
 
 /** Current Weather와 Forecast가 공유하는 OpenWeather base URL을 한 Axios instance에 둔다. */
 const openWeatherApi = axios.create({
@@ -40,9 +41,9 @@ export const fetchCurrentWeather = async (city) => {
 
 /**
  * /forecast 전체 응답을 도시 현지 시간 기반 3시간 내부 모델 배열로 변환한다.
- * 목록과 상세 View가 각자 route 상태로 독립 요청하며 오류 상태 판단은 호출자에게 맡긴다.
+ * 목록과 상세 View는 같은 공개 함수를 사용하고 오류 상태 판단은 각 호출자에게 맡긴다.
  */
-export const fetchWeatherForecast = async (cityConfig) => {
+const fetchWeatherForecastFromApi = async (cityConfig) => {
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
   if (!apiKey) {
@@ -64,3 +65,6 @@ export const fetchWeatherForecast = async (cityConfig) => {
 
   return mapForecastResponse(response.data, cityConfig)
 }
+
+export const fetchWeatherForecast = (cityConfig) =>
+  getCachedWeatherForecast(cityConfig, fetchWeatherForecastFromApi)

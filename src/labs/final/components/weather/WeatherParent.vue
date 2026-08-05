@@ -1,7 +1,8 @@
 <script setup>
-import { computed, onMounted, ref, watch, watchEffect } from 'vue'
-import { ElAlert, ElSkeleton } from 'element-plus'
+import { computed, onMounted, ref, watch } from 'vue'
+import { ElAlert, ElButton, ElSkeleton } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useWeatherSearch } from '../../composables/useWeatherSearch.js'
 import { weatherCities } from '../../data/weatherCities.js'
 import { weatherList } from '../../data/weatherData.js'
 import { fetchCurrentWeather } from '../../services/weatherApi.js'
@@ -18,11 +19,11 @@ import WeatherCard from './WeatherCard.vue'
 const router = useRouter()
 const configStore = useConfigStore()
 
-const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 const weatherItems = ref([...weatherList])
 const isLoadingWeather = ref(false)
 const failedCityIds = ref([])
+const { searchQuery, filteredWeatherList, updateSearchQuery } = useWeatherSearch(weatherItems)
 
 const failedCityNames = computed(() =>
   weatherCities.filter((city) => failedCityIds.value.includes(city.id)).map((city) => city.name),
@@ -33,19 +34,6 @@ const fallbackMessage = computed(() =>
     ? `${failedCityNames.value.join(', ')}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
     : '',
 )
-
-// API와 fallback을 합친 내부 모델에서 도시명 부분 검색을 수행하고 빈 검색어이면 전체를 반환한다.
-const filteredWeatherList = computed(() => {
-  const normalizedQuery = searchQuery.value.trim().toLowerCase()
-
-  if (!normalizedQuery) {
-    return weatherItems.value
-  }
-
-  return weatherItems.value.filter((weather) =>
-    weather.name.toLowerCase().includes(normalizedQuery),
-  )
-})
 
 const selectedTemperature = computed(() => {
   if (!selectedCityInfo.value) {
@@ -58,11 +46,6 @@ const selectedTemperature = computed(() => {
 const selectCity = (weather) => {
   // WeatherCard가 전달한 객체 전체를 Home의 선택 상태로 보관한다.
   selectedCityInfo.value = weather
-}
-
-const updateSearchQuery = (value) => {
-  // ElInput의 model update·clear·IME 값을 부모 검색 상태에 반영한다.
-  searchQuery.value = value
 }
 
 const loadWeather = async () => {
@@ -105,16 +88,6 @@ watch(selectedCityInfo, (newCity, oldCity) => {
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
 })
 
-watchEffect(() => {
-  // 최초 실행 후 검색어와 computed 결과를 자동 추적하고 API 배열 교체에도 다시 반응한다.
-  const query = searchQuery.value.trim()
-  const resultNames = filteredWeatherList.value.map((weather) => weather.name)
-
-  console.log('[watchEffect] 검색 상태')
-  console.log(`검색어: ${query || '입력 없음'}`)
-  console.log(`검색 결과: ${resultNames.length ? resultNames.join(', ') : '검색 결과 없음'}`)
-})
-
 const showDetail = (weather) => {
   // 자식 카드가 Router를 알지 않도록 부모가 cityId 동적 route 이동을 담당한다.
   router.push({
@@ -134,7 +107,10 @@ const showDetail = (weather) => {
     </BaseDashboardCard>
 
     <BaseDashboardCard aria-labelledby="final-weather-list-title">
-      <h2 id="final-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <template #header>
+        <h2 id="final-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      </template>
+
       <ElSkeleton
         v-if="isLoadingWeather"
         class="weather-load-skeleton"
@@ -153,26 +129,43 @@ const showDetail = (weather) => {
       <!-- Skeleton·Alert는 요청 안내 영역이고 현재 카드 또는 검색 empty 상태는 별도로 유지된다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <!-- 내부 도시 id를 key로 쓰고 Store의 표시 단위만 카드에 전달한다. -->
+        <!-- [tuning] 날씨 객체와 표시 단위가 같으면 카드 subtree를 재사용한다. -->
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
+          v-memo="[weather, configStore.unit]"
           :weather="weather"
           :unit="configStore.unit"
           :unit-symbol="configStore.unitSymbol"
           @select-card="selectCity"
           @click-detail="showDetail"
-        />
+        >
+          <template #actions="{ weather, openDetail }">
+            <ElButton
+              type="primary"
+              size="small"
+              plain
+              :aria-label="`${weather.name} 상세보기`"
+              @click.stop="openDetail"
+              @keydown.enter.stop
+            >
+              상세보기
+            </ElButton>
+          </template>
+        </WeatherCard>
       </div>
       <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
-    </BaseDashboardCard>
 
-    <div class="selection-status" role="status" aria-live="polite">
-      {{
-        selectedCityInfo
-          ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
-          : '카드를 클릭하거나 검색해 보세요.'
-      }}
-    </div>
+      <template #footer>
+        <div class="selection-status" role="status" aria-live="polite">
+          {{
+            selectedCityInfo
+              ? `${selectedCityInfo.name}이 선택되었습니다. 현재 기온은 ${selectedTemperature}${configStore.unitSymbol}이고 날씨는 ${selectedCityInfo.status}입니다.`
+              : '카드를 클릭하거나 검색해 보세요.'
+          }}
+        </div>
+      </template>
+    </BaseDashboardCard>
   </div>
 </template>
 
