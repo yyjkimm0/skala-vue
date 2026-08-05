@@ -18,6 +18,11 @@ import { fetchWeatherForecast } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * 날짜별 대표 Forecast를 표시하고 선택한 도시와 날짜를 상세 route params로 전달한다.
+ * 목록의 도시 선택은 query와 동기화해 상세 화면에서 돌아오거나 URL로 진입해도 복원한다.
+ * 날짜별 그룹화와 대표값 생성은 eighth와 같은 데이터 가공 흐름을 유지한다.
+ */
 const configStore = useConfigStore()
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +34,7 @@ const RAIN_PROBABILITY_THRESHOLD = 0.3
 const DEFAULT_CITY_ID = 'city_01'
 let latestRequestId = 0
 
+// query가 배열이면 첫 값을 사용하고, 등록되지 않은 값이나 누락값은 서울로 정규화한다.
 const getQueryCityId = (queryCityId) => {
   const cityId = Array.isArray(queryCityId) ? queryCityId[0] : queryCityId
 
@@ -91,6 +97,7 @@ const visibleForecasts = computed(() => {
   return source
 })
 
+// route name과 필수 params를 사용해 선택 도시·날짜가 식별되는 상세 URL로 이동한다.
 const openForecastDetail = (localDate) => {
   router.push({
     name: 'final-weather-forecast-detail',
@@ -101,6 +108,10 @@ const openForecastDetail = (localDate) => {
   })
 }
 
+/**
+ * 목록의 도시 선택과 URL query를 같은 값으로 맞춘다.
+ * 단순 선택 변경은 replace로 반영해 도시를 바꿀 때마다 history가 늘어나는 것을 막는다.
+ */
 const syncSelectedCityQuery = (cityId) => {
   if (route.name !== 'final-weather-forecast') {
     return
@@ -164,6 +175,7 @@ const loadForecast = async () => {
 
 watch(selectedCityId, loadForecast, { immediate: true })
 
+// 뒤로 가기나 직접 URL 진입으로 query가 바뀌면 검증된 도시를 화면 상태에도 반영한다.
 watch(
   () => route.query.cityId,
   (queryCityId) => {
@@ -244,6 +256,7 @@ watch(
       />
 
       <div v-else class="forecast-list">
+        <!-- 대표 카드는 마우스와 Enter·Space로 열 수 있고 Space의 기본 페이지 스크롤은 막는다. -->
         <ElCard
           v-for="forecast in visibleForecasts"
           :key="forecast.id"

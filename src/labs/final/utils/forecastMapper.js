@@ -1,3 +1,7 @@
+/**
+ * eighth의 3시간 예보 모델에 OpenWeather 아이콘 코드를 포함한다.
+ * 상세 View는 이 값으로 아이콘을 요청하며 원본 날씨 문구는 대체 표시에도 함께 사용한다.
+ */
 export const mapForecastResponse = (responseData, cityConfig) => {
   const forecastList = responseData?.list ?? []
   const timezoneOffset = responseData?.city?.timezone ?? 0
@@ -24,6 +28,7 @@ export const mapForecastResponse = (responseData, cityConfig) => {
       pop,
     } = normalizedItem
     const status = condition?.description ?? '정보 없음'
+    // 아이콘 필드가 없는 응답은 빈 문자열로 두어 상세 View가 텍스트 fallback을 선택하게 한다.
     const icon = condition?.icon ?? ''
     const precipitationProbability = pop ?? 0
     const id = `${cityConfig.id}-${dateTime ?? dt}`
