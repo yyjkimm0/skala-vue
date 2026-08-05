@@ -18,6 +18,7 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 카드는 route를 알지 않고 상세 의도만 전달하며, click.stop으로 선택과 이동을 분리한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>

@@ -7,6 +7,11 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * third의 컴포넌트와 상태 흐름을 유지하면서 상세보기를 실제 route 이동으로 확장한다.
+ * 도시 id를 URL에 전달해 상세 화면의 직접 접근과 새로고침에서도 대상을 복원한다.
+ * Pinia와 API 연동 전이므로 상세 데이터는 동일한 Mock Data를 사용한다.
+ */
 const router = useRouter()
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
@@ -30,6 +35,7 @@ const selectCity = (weather) => {
 }
 
 const showDetail = (weather) => {
+  // 자식이 전달한 도시가 실행 시점에 결정되므로 부모가 route name과 params로 목적지를 구성한다.
   router.push({
     name: 'fourth-weather-detail',
     params: {

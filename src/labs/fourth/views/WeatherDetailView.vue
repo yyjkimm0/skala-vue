@@ -4,8 +4,13 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import { weatherList } from '../data/weatherData.js'
 
+/**
+ * URL의 동적 cityId를 기준으로 Mock Data에서 상세 도시를 조회한다.
+ * route 형식이 유효해도 데이터에 없는 id일 수 있으므로 View 내부에서 존재 여부를 구분한다.
+ */
 const route = useRoute()
 
+// params가 바뀌면 새 cityId를 읽어 원본 배열을 변경하지 않고 상세 데이터를 다시 계산한다.
 const city = computed(() => weatherList.find((weather) => weather.id === route.params.cityId))
 </script>
 
@@ -36,6 +41,7 @@ const city = computed(() => weatherList.find((weather) => weather.id === route.p
       </div>
     </dl>
 
+    <!-- 등록되지 않은 경로의 NotFound와 달리, 상세 route에 데이터만 없는 경우를 안내한다. -->
     <p v-else class="missing-city">해당 도시 정보를 찾을 수 없습니다.</p>
 
     <RouterLink class="back-link" :to="{ name: 'fourth-weather-home' }">

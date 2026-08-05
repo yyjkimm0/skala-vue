@@ -1,5 +1,10 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+
+/**
+ * fourth 내부의 어떤 route에도 일치하지 않는 주소를 처리한다.
+ * 정상적인 Home 화면으로 돌아갈 수 있도록 선언적 복귀 링크를 제공한다.
+ */
 </script>
 
 <template>

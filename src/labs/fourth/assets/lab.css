@@ -1,3 +1,4 @@
+/* fourth route 화면 전체의 폭과 중앙 배치 */
 .fourth-lab {
   width: 100%;
   max-width: 460px;
@@ -5,6 +6,7 @@
   margin: 0 auto;
 }
 
+/* Home과 About 사이의 공통 route navigation */
 .fourth-lab .app-navigation {
   display: flex;
   align-items: center;
