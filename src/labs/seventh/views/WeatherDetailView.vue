@@ -1,11 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import {
-  ElAlert,
-  ElDescriptions,
-  ElDescriptionsItem,
-  ElSkeleton,
-} from 'element-plus'
+import { ElAlert, ElDescriptions, ElDescriptionsItem, ElSkeleton } from 'element-plus'
 import { RouterLink, useRoute } from 'vue-router'
 import { findWeatherCityById } from '../data/weatherCities.js'
 import { weatherList } from '../data/weatherData.js'
@@ -110,26 +105,14 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
         <ElDescriptionsItem label="현재 기온">
           {{ displayTemperature }}{{ configStore.unitSymbol }}
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="습도">
-          {{ city.humidity }}%
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="풍속">
-          {{ city.windSpeed }}m/s
-        </ElDescriptionsItem>
+        <ElDescriptionsItem label="습도"> {{ city.humidity }}% </ElDescriptionsItem>
+        <ElDescriptionsItem label="풍속"> {{ city.windSpeed }}m/s </ElDescriptionsItem>
       </ElDescriptions>
 
-      <p
-        v-else
-        class="missing-city"
-      >
-        해당 도시 정보를 찾을 수 없습니다.
-      </p>
+      <p v-else class="missing-city">해당 도시 정보를 찾을 수 없습니다.</p>
     </template>
 
-    <RouterLink
-      class="back-link"
-      :to="{ name: 'seventh-weather-home' }"
-    >
+    <RouterLink class="back-link" :to="{ name: 'seventh-weather-home' }">
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>

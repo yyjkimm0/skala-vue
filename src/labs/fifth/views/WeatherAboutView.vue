@@ -18,10 +18,7 @@ import { RouterLink } from 'vue-router'
 
     <p>화면에 표시되는 날씨 정보는 외부 API가 아닌 고정 Mock Data입니다.</p>
 
-    <RouterLink
-      class="back-link"
-      :to="{ name: 'fifth-weather-home' }"
-    >
+    <RouterLink class="back-link" :to="{ name: 'fifth-weather-home' }">
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>

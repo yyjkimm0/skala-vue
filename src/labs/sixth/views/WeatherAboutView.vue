@@ -18,10 +18,7 @@ import { RouterLink } from 'vue-router'
 
     <p>실시간 요청에 실패한 도시만 기존 Mock Data로 안전하게 표시합니다.</p>
 
-    <RouterLink
-      class="back-link"
-      :to="{ name: 'sixth-weather-home' }"
-    >
+    <RouterLink class="back-link" :to="{ name: 'sixth-weather-home' }">
       ← 메인 대시보드로 돌아가기
     </RouterLink>
   </section>

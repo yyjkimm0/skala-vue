@@ -27,10 +27,7 @@ onMounted(loadSeoulWeather)
   <section class="weather-api-test">
     <h2>서울 현재 날씨 API 테스트</h2>
 
-    <p
-      v-if="isLoading"
-      class="weather-api-test__status weather-api-test__status--loading"
-    >
+    <p v-if="isLoading" class="weather-api-test__status weather-api-test__status--loading">
       서울 날씨를 불러오는 중입니다.
     </p>
 

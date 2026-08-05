@@ -78,9 +78,7 @@ const showDetail = (cityName, status) => {
           <h3>{{ weather.name }}</h3>
           <p class="temperature">{{ weather.temp }}℃</p>
           <p>날씨 상태: {{ weather.status }}</p>
-          <p v-if="weather.temp >= 25" class="temperature-label hot">
-            🔥 더움 (25도 이상)
-          </p>
+          <p v-if="weather.temp >= 25" class="temperature-label hot">🔥 더움 (25도 이상)</p>
           <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
           <button type="button" @click.stop="showDetail(weather.name, weather.status)">
             상세보기

@@ -34,9 +34,8 @@ export const mapForecastResponse = (responseData, cityConfig) => {
     const [localDate = '', localTime = ''] = localIsoString.split('T')
     const [localHourText = ''] = localTime.split(':')
     const localHour = Number.parseInt(localHourText, 10)
-    const localDateTime = localDate && localTime
-      ? `${localDate} ${localTime.slice(0, 5)}`
-      : undefined
+    const localDateTime =
+      localDate && localTime ? `${localDate} ${localTime.slice(0, 5)}` : undefined
 
     return {
       id,

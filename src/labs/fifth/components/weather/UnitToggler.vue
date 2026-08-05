@@ -7,10 +7,7 @@ const configStore = useConfigStore()
 <template>
   <div class="unit-toggler">
     <span>현재 단위: {{ configStore.unitSymbol }}</span>
-    <button
-      type="button"
-      @click="configStore.toggleUnit"
-    >
+    <button type="button" @click="configStore.toggleUnit">
       {{ configStore.unit === 'celsius' ? '화씨로 전환' : '섭씨로 전환' }}
     </button>
   </div>

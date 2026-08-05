@@ -20,9 +20,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-card', 'click-detail'])
 
-const displayTemperature = computed(() =>
-  convertTemperature(props.weather.temp, props.unit),
-)
+const displayTemperature = computed(() => convertTemperature(props.weather.temp, props.unit))
 
 const isHot = computed(() => props.weather.temp >= 25)
 
@@ -36,12 +34,7 @@ const clickDetail = () => {
 </script>
 
 <template>
-  <article
-    class="weather-card"
-    tabindex="0"
-    @click="selectCard"
-    @keydown.enter="selectCard"
-  >
+  <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">

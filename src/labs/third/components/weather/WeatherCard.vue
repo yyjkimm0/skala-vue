@@ -18,36 +18,17 @@ const clickDetail = () => {
 </script>
 
 <template>
-  <article
-    class="weather-card"
-    tabindex="0"
-    @click="selectCard"
-    @keydown.enter="selectCard"
-  >
+  <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>
       <p class="weather-card__temperature">현재 기온: {{ props.weather.temp }}℃</p>
-      <span
-        v-if="props.weather.temp >= 25"
-        class="temperature-label hot"
-      >
+      <span v-if="props.weather.temp >= 25" class="temperature-label hot">
         🔥 더움 (25도 이상)
       </span>
-      <span
-        v-else
-        class="temperature-label cool"
-      >
-        ❄️ 선선함 (25도 미만)
-      </span>
+      <span v-else class="temperature-label cool"> ❄️ 선선함 (25도 미만) </span>
     </div>
 
-    <button
-      type="button"
-      @click.stop="clickDetail"
-      @keydown.enter.stop
-    >
-      상세보기
-    </button>
+    <button type="button" @click.stop="clickDetail" @keydown.enter.stop>상세보기</button>
   </article>
 </template>
 
@@ -135,6 +116,5 @@ button:focus-visible {
   .weather-card {
     flex-wrap: wrap;
   }
-
 }
 </style>

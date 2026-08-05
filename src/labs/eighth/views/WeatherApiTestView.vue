@@ -1,11 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import {
-  ElAlert,
-  ElDescriptions,
-  ElDescriptionsItem,
-  ElSkeleton,
-} from 'element-plus'
+import { ElAlert, ElDescriptions, ElDescriptionsItem, ElSkeleton } from 'element-plus'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
 const weather = ref(null)
@@ -59,18 +54,12 @@ onMounted(loadSeoulWeather)
       <ElDescriptionsItem label="도시명">
         {{ weather.name }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="현재 기온">
-        {{ weather.temp }}°C
-      </ElDescriptionsItem>
+      <ElDescriptionsItem label="현재 기온"> {{ weather.temp }}°C </ElDescriptionsItem>
       <ElDescriptionsItem label="날씨 상태">
         {{ weather.status }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="습도">
-        {{ weather.humidity }}%
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="풍속">
-        {{ weather.windSpeed }}m/s
-      </ElDescriptionsItem>
+      <ElDescriptionsItem label="습도"> {{ weather.humidity }}% </ElDescriptionsItem>
+      <ElDescriptionsItem label="풍속"> {{ weather.windSpeed }}m/s </ElDescriptionsItem>
     </ElDescriptions>
   </section>
 </template>
@@ -92,5 +81,4 @@ onMounted(loadSeoulWeather)
 .weather-api-test__skeleton {
   margin: 0;
 }
-
 </style>
