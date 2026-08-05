@@ -5,6 +5,11 @@ export const eighthRoutes = [
     component: () => import('../views/WeatherHomeView.vue'),
   },
   {
+    path: 'forecast',
+    name: 'eighth-weather-forecast',
+    component: () => import('../views/WeatherForecastView.vue'),
+  },
+  {
     path: 'about',
     name: 'eighth-weather-about',
     component: () => import('../views/WeatherAboutView.vue'),

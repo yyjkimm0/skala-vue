@@ -43,8 +43,8 @@ export const labs = [
   },
   {
     id: 'eighth',
-    label: '여덟 번째 과제',
-    title: '여덟 번째 과제',
+    label: '여덟 번째 실습',
+    title: '과제 8: API 활용',
     path: '/eighth',
   },
 ]
