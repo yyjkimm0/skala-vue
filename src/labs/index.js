@@ -49,8 +49,8 @@ export const labs = [
   },
   {
     id: 'final',
-    label: '최종 확장',
-    title: '최종 날씨 앱',
+    label: '최종 실습',
+    title: '날씨 웹앱',
     path: '/final',
   },
 ]

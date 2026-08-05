@@ -14,7 +14,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/eighth',
+      redirect: '/final',
     },
     {
       path: '/first',
@@ -72,7 +72,7 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/sixth',
+      redirect: '/final',
     },
   ],
 })
