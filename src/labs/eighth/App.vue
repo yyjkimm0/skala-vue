@@ -1,0 +1,19 @@
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import UnitToggler from './components/weather/UnitToggler.vue'
+import 'element-plus/dist/index.css'
+import './assets/lab.css'
+</script>
+
+<template>
+  <section class="eighth-lab">
+    <nav class="app-navigation" aria-label="여덟 번째 과제 메뉴">
+      <div class="app-navigation__links">
+        <RouterLink :to="{ name: 'eighth-weather-home' }">날씨 대시보드</RouterLink>
+        <RouterLink :to="{ name: 'eighth-weather-about' }">서비스 소개</RouterLink>
+      </div>
+      <UnitToggler />
+    </nav>
+    <RouterView />
+  </section>
+</template>

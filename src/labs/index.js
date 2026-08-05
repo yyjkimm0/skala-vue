@@ -41,4 +41,10 @@ export const labs = [
     title: '과제 7: Element Plus 활용',
     path: '/seventh',
   },
+  {
+    id: 'eighth',
+    label: '여덟 번째 과제',
+    title: '여덟 번째 과제',
+    path: '/eighth',
+  },
 ]
