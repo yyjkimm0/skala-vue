@@ -5,6 +5,8 @@ import { computed, ref, watch, watchEffect } from 'vue'
  * first의 Mockup 기능에 ref, computed, watch, watchEffect를 적용한 단계다.
  * 검색과 상태 감시를 추가하되 컴포넌트 분리·상세 Router·Pinia·API 연동 전 구조를 유지한다.
  */
+// 외부 API 도입 전이므로 화면에 필요한 이름·기온·상태를 고정 데이터로 제공한다.
+// 각 id는 v-for에서 도시 카드의 정체성을 유지하는 식별값으로 사용한다.
 // 배열을 바꾸지 않는 현재 예제에서도 Composition API의 반응형 상태 구조를 학습하도록 ref로 관리한다.
 const weatherList = ref([
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
@@ -17,7 +19,7 @@ const searchQuery = ref('')
 // 이름·기온·상태를 함께 표시하고 감시할 수 있도록 선택한 weather 객체 전체를 보관한다.
 const selectedCityInfo = ref(null)
 
-// 원본 목록은 수정하지 않고 검색어에 맞는 화면용 배열을 계산한다.
+// 원본 목록은 수정하지 않고 검색어가 도시 이름에 포함되는 항목만 화면용 배열로 계산한다.
 // 앞뒤 공백을 제거한 검색어가 비어 있으면 전체 도시를 반환한다.
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
@@ -29,12 +31,13 @@ const filteredWeatherList = computed(() => {
   return weatherList.value.filter((weather) => weather.name.toLowerCase().includes(normalizedQuery))
 })
 
+// 카드 클릭과 Enter 입력이 같은 함수를 사용하며, 상태 안내에 필요한 weather 객체 전체를 보관한다.
 const selectCity = (weather) => {
   selectedCityInfo.value = weather
 }
 
 // 선택 객체의 참조가 바뀔 때만 실행해 이전 도시와 현재 도시를 비교한다.
-// 객체 내부를 수정하는 흐름이 아니므로 deep 감시는 필요하지 않다.
+// immediate 옵션이 없으므로 최초 마운트에는 실행되지 않으며, 객체 내부를 바꾸지 않아 deep 감시도 필요 없다.
 watch(selectedCityInfo, (newCity, oldCity) => {
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
@@ -53,6 +56,7 @@ watchEffect(() => {
 })
 
 const showDetail = (cityName, status) => {
+  // 상세 route 도입 전 단계이므로 별도 이동 없이 현재 도시 상태를 alert로 확인한다.
   window.alert(`${cityName}의 현재 날씨는 [${status}] 상태입니다.`)
 }
 </script>
@@ -93,6 +97,7 @@ const showDetail = (cityName, status) => {
           <div class="weather-card__info">
             <h3 class="weather-card__name">{{ weather.name }} ({{ weather.status }})</h3>
             <p class="temperature">현재 기온: {{ weather.temp }}℃</p>
+            <!-- 25도 기준은 원본 기온을 변경하지 않고 카드의 상태 문구만 선택한다. -->
             <p v-if="weather.temp >= 25" class="temperature-label hot">🔥 더움 (25도 이상)</p>
             <p v-else class="temperature-label cool">❄️ 선선함 (25도 미만)</p>
           </div>
