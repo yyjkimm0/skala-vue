@@ -2,15 +2,22 @@
 import { computed, ref, watch } from 'vue'
 import {
   ElAlert,
+  ElCard,
+  ElEmpty,
   ElOption,
+  ElProgress,
   ElRadioButton,
   ElRadioGroup,
   ElSelect,
   ElSkeleton,
+  ElTag,
 } from 'element-plus'
 import { findWeatherCityById, weatherCities } from '../data/weatherCities.js'
 import { fetchWeatherForecast } from '../services/weatherApi.js'
+import { useConfigStore } from '../stores/configStore.js'
+import { convertTemperature } from '../utils/temperature.js'
 
+const configStore = useConfigStore()
 const forecasts = ref([])
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -83,6 +90,12 @@ const formatLocalDate = (localDate) => {
 const formatLocalTime = (localDateTime) =>
   localDateTime?.split(' ')[1] ?? '정보 없음'
 
+const displayTemperature = (temperature) =>
+  convertTemperature(temperature, configStore.unit)
+
+const toPercentage = (probability) =>
+  Math.min(100, Math.max(0, Math.round((probability ?? 0) * 100)))
+
 const loadForecast = async () => {
   const requestId = ++latestRequestId
   const cityConfig = selectedCity.value
@@ -113,89 +126,116 @@ watch(selectedCityId, loadForecast, { immediate: true })
 
 <template>
   <section class="forecast-view">
-    <h2>{{ selectedCity.name }} 5일 단기 예보</h2>
-    <p>
-      3시간 간격 예보를 날짜별로 묶고, 정오에 가장 가까운 시간대를 대표 예보로
-      표시합니다.
-    </p>
+    <ElCard class="forecast-panel" shadow="never">
+      <template #header>
+        <div class="forecast-panel__header">
+          <h2>{{ selectedCity.name }} 5일 단기 예보</h2>
+          <p>
+            3시간 간격 예보에서 날짜별 정오에 가장 가까운 항목을 표시합니다.
+          </p>
+        </div>
+      </template>
 
-    <div class="forecast-controls">
-      <ElSelect
-        v-model="selectedCityId"
-        class="forecast-controls__city"
-        placeholder="도시 선택"
-        aria-label="예보 도시 선택"
-        size="small"
-      >
-        <ElOption
-          v-for="city in weatherCities"
-          :key="city.id"
-          :label="city.name"
-          :value="city.id"
-        />
-      </ElSelect>
+      <div class="forecast-controls">
+        <ElSelect
+          v-model="selectedCityId"
+          class="forecast-controls__city"
+          placeholder="도시 선택"
+          aria-label="예보 도시 선택"
+          size="small"
+        >
+          <ElOption
+            v-for="city in weatherCities"
+            :key="city.id"
+            :label="city.name"
+            :value="city.id"
+          />
+        </ElSelect>
 
-      <ElRadioGroup v-model="forecastFilter" size="small">
-        <ElRadioButton value="all">전체 예보</ElRadioButton>
-        <ElRadioButton value="rainy">비 예보만</ElRadioButton>
-      </ElRadioGroup>
-    </div>
+        <ElRadioGroup v-model="forecastFilter" size="small">
+          <ElRadioButton value="all">전체 예보</ElRadioButton>
+          <ElRadioButton value="rainy">비 예보만</ElRadioButton>
+        </ElRadioGroup>
+      </div>
 
-    <ElSkeleton
-      v-if="isLoading"
-      :rows="5"
-      animated
-      :aria-label="`${selectedCity.name} 단기 예보를 불러오는 중입니다.`"
-    />
+      <ElSkeleton
+        v-if="isLoading"
+        :rows="4"
+        animated
+        :aria-label="`${selectedCity.name} 단기 예보를 불러오는 중입니다.`"
+      />
 
-    <ElAlert
-      v-else-if="errorMessage"
-      :title="errorMessage"
-      type="error"
-      show-icon
-      :closable="false"
-    />
+      <ElAlert
+        v-else-if="errorMessage"
+        :title="errorMessage"
+        type="error"
+        show-icon
+        :closable="false"
+      />
 
-    <p v-else-if="!forecasts.length" class="forecast-view__status">
-      표시할 예보 데이터가 없습니다.
-    </p>
+      <ElEmpty
+        v-else-if="!forecasts.length"
+        description="표시할 예보 데이터가 없습니다."
+        :image-size="72"
+      />
 
-    <p v-else-if="!visibleForecasts.length" class="forecast-view__status">
-      선택한 기간에 비 예보가 없습니다.
-    </p>
+      <ElEmpty
+        v-else-if="forecastFilter === 'rainy' && !visibleForecasts.length"
+        description="선택한 기간에 비 예보가 없습니다."
+        :image-size="72"
+      />
 
-    <ul v-else class="forecast-list">
-      <li
-        v-for="forecast in visibleForecasts"
-        :key="forecast.id"
-        class="forecast-list__item"
-      >
-        <strong>{{ formatLocalDate(forecast.localDate) }}</strong>
-        <span>대표 시각: {{ formatLocalTime(forecast.localDateTime) }}</span>
-        <span>기온: {{ forecast.temp }}℃</span>
-        <span>체감온도: {{ forecast.feelsLike }}℃</span>
-        <span>날씨: {{ forecast.status }}</span>
-        <span>습도: {{ forecast.humidity }}%</span>
-        <span>
-          강수확률: {{ Math.round(forecast.precipitationProbability * 100) }}%
-        </span>
-      </li>
-    </ul>
+      <div v-else class="forecast-list">
+        <ElCard
+          v-for="forecast in visibleForecasts"
+          :key="forecast.id"
+          class="forecast-card"
+          shadow="hover"
+        >
+          <div class="forecast-card__layout">
+            <div class="forecast-card__summary">
+              <strong>{{ formatLocalDate(forecast.localDate) }}</strong>
+              <span>대표 시각: {{ formatLocalTime(forecast.localDateTime) }}</span>
+              <ElTag
+                :type="isRainyForecast(forecast) ? 'warning' : 'success'"
+                size="small"
+                effect="light"
+              >
+                {{ isRainyForecast(forecast) ? '🌧️' : '☀️' }} {{ forecast.status }}
+              </ElTag>
+            </div>
 
+            <div class="forecast-card__metrics">
+              <span>
+                기온: {{ displayTemperature(forecast.temp) }}{{ configStore.unitSymbol }}
+              </span>
+              <span>
+                체감온도: {{ displayTemperature(forecast.feelsLike) }}{{ configStore.unitSymbol }}
+              </span>
+              <span>습도: {{ forecast.humidity }}%</span>
+              <div class="forecast-precipitation">
+                <span>강수확률</span>
+                <ElProgress
+                  :percentage="toPercentage(forecast.precipitationProbability)"
+                  :stroke-width="8"
+                />
+              </div>
+            </div>
+          </div>
+        </ElCard>
+      </div>
+    </ElCard>
   </section>
 </template>
 
 <style scoped>
 .forecast-view {
-  padding: 14px;
-  border: 1px solid #d6e0ed;
-  border-radius: 6px;
-  background: #fff;
+  min-width: 0;
 }
 
 h2,
 p {
-  margin-top: 0;
+  margin: 0;
 }
 
 h2 {
@@ -220,9 +260,18 @@ p {
   width: 120px;
 }
 
-.forecast-view__status {
-  margin-bottom: 0;
-  color: #64748b;
+.forecast-panel {
+  min-width: 0;
+}
+
+.forecast-panel__header {
+  display: grid;
+  gap: 4px;
+}
+
+.forecast-panel :deep(.el-card__header),
+.forecast-panel :deep(.el-card__body) {
+  padding: 12px;
 }
 
 .forecast-list {
@@ -230,21 +279,57 @@ p {
   gap: 8px;
   margin: 0;
   padding: 0;
-  list-style: none;
 }
 
-.forecast-list__item {
-  display: grid;
-  gap: 3px;
+.forecast-card {
+  min-width: 0;
+}
+
+.forecast-card :deep(.el-card__body) {
   padding: 10px;
-  border: 1px solid #dbe4ef;
-  border-radius: 5px;
+}
+
+.forecast-card__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr);
+  gap: 12px;
   color: #475569;
-  background: #f8fafc;
   font-size: 0.76rem;
 }
 
-.forecast-list__item strong {
+.forecast-card__summary,
+.forecast-card__metrics {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.forecast-card__summary strong {
   color: #1e293b;
+}
+
+.forecast-card__summary .el-tag {
+  justify-self: start;
+}
+
+.forecast-precipitation {
+  display: grid;
+  gap: 3px;
+}
+
+@media (max-width: 390px) {
+  .forecast-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .forecast-controls__city {
+    width: 100%;
+  }
+
+  .forecast-card__layout {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
