@@ -1,13 +1,25 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { ElAlert, ElSkeleton } from 'element-plus'
-import { findWeatherCityById } from '../data/weatherCities.js'
+import { computed, ref, watch } from 'vue'
+import {
+  ElAlert,
+  ElOption,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSelect,
+  ElSkeleton,
+} from 'element-plus'
+import { findWeatherCityById, weatherCities } from '../data/weatherCities.js'
 import { fetchWeatherForecast } from '../services/weatherApi.js'
 
 const forecasts = ref([])
 const isLoading = ref(false)
 const errorMessage = ref('')
-const seoulConfig = findWeatherCityById('city_01')
+const selectedCityId = ref('city_01')
+const forecastFilter = ref('all')
+const RAIN_PROBABILITY_THRESHOLD = 0.3
+let latestRequestId = 0
+
+const selectedCity = computed(() => findWeatherCityById(selectedCityId.value))
 
 const forecastsByDate = computed(() =>
   forecasts.value.reduce((groups, forecast) => {
@@ -48,6 +60,20 @@ const dailyForecasts = computed(() =>
     .slice(0, 5),
 )
 
+const isRainyForecast = (forecast) =>
+  forecast.status.includes('비') ||
+  forecast.precipitationProbability >= RAIN_PROBABILITY_THRESHOLD
+
+const visibleForecasts = computed(() => {
+  const source = [...dailyForecasts.value]
+
+  if (forecastFilter.value === 'rainy') {
+    return source.filter(isRainyForecast)
+  }
+
+  return source
+})
+
 const formatLocalDate = (localDate) => {
   const [year, month, day] = localDate.split('-')
 
@@ -57,36 +83,69 @@ const formatLocalDate = (localDate) => {
 const formatLocalTime = (localDateTime) =>
   localDateTime?.split(' ')[1] ?? '정보 없음'
 
-const loadSeoulForecast = async () => {
+const loadForecast = async () => {
+  const requestId = ++latestRequestId
+  const cityConfig = selectedCity.value
+
   isLoading.value = true
   errorMessage.value = ''
+  forecasts.value = []
 
   try {
-    forecasts.value = await fetchWeatherForecast(seoulConfig)
+    const result = await fetchWeatherForecast(cityConfig)
+
+    if (requestId === latestRequestId) {
+      forecasts.value = result
+    }
   } catch {
-    forecasts.value = []
-    errorMessage.value = '단기 예보를 불러오지 못했습니다.'
+    if (requestId === latestRequestId) {
+      errorMessage.value = '단기 예보를 불러오지 못했습니다.'
+    }
   } finally {
-    isLoading.value = false
+    if (requestId === latestRequestId) {
+      isLoading.value = false
+    }
   }
 }
 
-onMounted(loadSeoulForecast)
+watch(selectedCityId, loadForecast, { immediate: true })
 </script>
 
 <template>
   <section class="forecast-view">
-    <h2>서울 5일 단기 예보</h2>
+    <h2>{{ selectedCity.name }} 5일 단기 예보</h2>
     <p>
       3시간 간격 예보를 날짜별로 묶고, 정오에 가장 가까운 시간대를 대표 예보로
       표시합니다.
     </p>
 
+    <div class="forecast-controls">
+      <ElSelect
+        v-model="selectedCityId"
+        class="forecast-controls__city"
+        placeholder="도시 선택"
+        aria-label="예보 도시 선택"
+        size="small"
+      >
+        <ElOption
+          v-for="city in weatherCities"
+          :key="city.id"
+          :label="city.name"
+          :value="city.id"
+        />
+      </ElSelect>
+
+      <ElRadioGroup v-model="forecastFilter" size="small">
+        <ElRadioButton value="all">전체 예보</ElRadioButton>
+        <ElRadioButton value="rainy">비 예보만</ElRadioButton>
+      </ElRadioGroup>
+    </div>
+
     <ElSkeleton
       v-if="isLoading"
       :rows="5"
       animated
-      aria-label="서울 단기 예보를 불러오는 중입니다."
+      :aria-label="`${selectedCity.name} 단기 예보를 불러오는 중입니다.`"
     />
 
     <ElAlert
@@ -97,9 +156,17 @@ onMounted(loadSeoulForecast)
       :closable="false"
     />
 
-    <ul v-else-if="dailyForecasts.length" class="forecast-list">
+    <p v-else-if="!forecasts.length" class="forecast-view__status">
+      표시할 예보 데이터가 없습니다.
+    </p>
+
+    <p v-else-if="!visibleForecasts.length" class="forecast-view__status">
+      선택한 기간에 비 예보가 없습니다.
+    </p>
+
+    <ul v-else class="forecast-list">
       <li
-        v-for="forecast in dailyForecasts"
+        v-for="forecast in visibleForecasts"
         :key="forecast.id"
         class="forecast-list__item"
       >
@@ -115,9 +182,6 @@ onMounted(loadSeoulForecast)
       </li>
     </ul>
 
-    <p v-else class="forecast-view__status">
-      표시할 예보 데이터가 없습니다.
-    </p>
   </section>
 </template>
 
@@ -142,6 +206,18 @@ h2 {
 p {
   font-size: 0.78rem;
   line-height: 1.6;
+}
+
+.forecast-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.forecast-controls__city {
+  width: 120px;
 }
 
 .forecast-view__status {
