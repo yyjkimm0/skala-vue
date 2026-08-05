@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * labs metadata를 선택지로 표시하고 현재 route의 lab id를 선택값으로 받는다.
+ * 선택 결과만 부모에 알리며 실제 route 이동과 상태 소유는 App shell이 담당한다.
+ */
 defineProps({
   labs: {
     type: Array,
@@ -13,6 +17,7 @@ defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const handleChange = (event) => {
+  // prop을 직접 변경하지 않고 새 lab id를 부모에 전달한다.
   emit('update:modelValue', event.target.value)
 }
 </script>

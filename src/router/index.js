@@ -9,6 +9,10 @@ import { seventhRoutes } from '../labs/seventh/router/index.js'
 import { sixthRoutes } from '../labs/sixth/router/index.js'
 import { thirdRoutes } from '../labs/third/router/index.js'
 
+/**
+ * 앱에서 유일한 Router 인스턴스다.
+ * 각 lab이 제공하는 자식 route 배열을 부모 경로 아래에 결합한다.
+ */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -19,6 +23,7 @@ const router = createRouter({
     {
       path: '/first',
       component: () => import('../labs/first/App.vue'),
+      // App shell은 이 값을 통해 현재 제목과 selector 선택값을 동기화한다.
       meta: { labId: 'first' },
       children: firstRoutes,
     },
@@ -72,6 +77,7 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
+      // 어느 lab에도 속하지 않는 주소는 현재 최종 앱의 시작 화면으로 안내한다.
       redirect: '/final',
     },
   ],

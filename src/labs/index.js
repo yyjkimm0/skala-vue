@@ -1,3 +1,7 @@
+/**
+ * App shell의 제목과 LabSelector가 함께 사용하는 단일 metadata 원천이다.
+ * id는 route meta, label은 선택지, title은 화면 제목, path는 이동 주소에 대응한다.
+ */
 export const labs = [
   {
     id: 'first',

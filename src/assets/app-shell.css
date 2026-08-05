@@ -1,3 +1,4 @@
+/* 전체 페이지 shell */
 :root {
   color: #1f2937;
   background: #f3f6fb;
@@ -34,6 +35,7 @@ select {
   padding: 16px 0 28px;
 }
 
+/* 현재 lab의 제목, 선택기, 콘텐츠를 감싸는 공통 frame */
 .lab-frame {
   width: 100%;
   min-width: 0;
@@ -43,6 +45,7 @@ select {
   background: #f8fafc;
 }
 
+/* lab 제목과 selector */
 .lab-header {
   display: flex;
   align-items: center;
@@ -68,6 +71,7 @@ select {
   min-width: 0;
 }
 
+/* 작은 화면의 공통 shell 조정 */
 @media (max-width: 540px) {
   .app-container {
     width: calc(100% - 20px);
