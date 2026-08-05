@@ -2,9 +2,33 @@
 <html lang="">
   <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="%BASE_URL%favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vite App</title>
+    <script>
+      // Restore the SPA route forwarded by GitHub Pages 404 fallback.
+      ;(() => {
+        const repositoryBase = '/skala-vue/'
+        const fallbackRoute = new URLSearchParams(window.location.search).get('spa')
+
+        if (!fallbackRoute || !fallbackRoute.startsWith(repositoryBase)) return
+
+        const restoredUrl = new URL(fallbackRoute, window.location.origin)
+
+        if (
+          restoredUrl.origin !== window.location.origin ||
+          !restoredUrl.pathname.startsWith(repositoryBase)
+        ) {
+          return
+        }
+
+        window.history.replaceState(
+          null,
+          '',
+          `${restoredUrl.pathname}${restoredUrl.search}${restoredUrl.hash}`,
+        )
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지 이동 중</title>
+    <script>
+      ;(() => {
+        const repositoryBase = '/skala-vue/'
+        const currentPath = window.location.pathname
+
+        if (!currentPath.startsWith(repositoryBase) || currentPath === repositoryBase) return
+
+        const originalRoute = `${currentPath}${window.location.search}${window.location.hash}`
+        const redirectUrl = `${repositoryBase}?spa=${encodeURIComponent(originalRoute)}`
+
+        window.location.replace(redirectUrl)
+      })()
+    </script>
+  </head>
+  <body>
+    <p>요청한 페이지로 이동하고 있습니다.</p>
+    <noscript>
+      JavaScript를 사용할 수 없습니다.
+      <a href="/skala-vue/">날씨 과제 홈으로 이동</a>
+    </noscript>
+  </body>
+</html>
