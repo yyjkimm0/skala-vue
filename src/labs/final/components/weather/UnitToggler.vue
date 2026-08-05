@@ -13,7 +13,6 @@ const handleUnitChange = (nextUnit) => {
 
 <template>
   <div class="unit-toggler">
-    <span class="unit-toggler__label">온도 단위:</span>
     <ElSwitch
       :model-value="configStore.unit"
       active-value="fahrenheit"
