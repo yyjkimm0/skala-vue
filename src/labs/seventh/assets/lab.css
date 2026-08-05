@@ -3,6 +3,7 @@ input {
   font: inherit;
 }
 
+/* Element Plus 기본 CSS 위에서 seventh route shell의 폭과 navigation 배치를 유지한다. */
 .seventh-lab {
   width: 100%;
   max-width: 460px;
@@ -45,6 +46,7 @@ input {
   color: #1d4ed8;
 }
 
+/* 작은 화면에서는 route 링크와 단위 Switch가 서로 겹치지 않도록 세로로 배치한다. */
 @media (max-width: 340px) {
   .seventh-lab .app-navigation {
     align-items: flex-start;

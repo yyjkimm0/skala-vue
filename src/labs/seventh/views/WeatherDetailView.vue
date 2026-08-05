@@ -8,6 +8,10 @@ import { fetchCurrentWeather } from '../services/weatherApi.js'
 import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
+/**
+ * sixth의 상세 요청과 fallback 판단은 유지하고 대기·경고·성공 정보를 Element Plus로 구분한다.
+ * Skeleton 뒤에 warning Alert와 Descriptions를 배치해 Mock 사용 여부와 상세값을 함께 보여준다.
+ */
 const route = useRoute()
 const configStore = useConfigStore()
 
@@ -70,6 +74,7 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 
 <template>
   <section class="weather-detail">
+    <!-- 요청 상태를 먼저 판정하고 완료된 경우에만 fallback 안내와 상세 정보를 렌더링한다. -->
     <ElSkeleton
       v-if="isLoading"
       class="weather-detail__skeleton"
@@ -88,6 +93,7 @@ watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
         :closable="false"
       />
 
+      <!-- 중첩된 날씨 값을 label-value 형식으로 일관되게 읽을 수 있도록 구조화한다. -->
       <ElDescriptions
         v-if="city"
         class="weather-detail__descriptions"

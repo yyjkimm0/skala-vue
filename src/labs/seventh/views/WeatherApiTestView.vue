@@ -3,6 +3,10 @@ import { onMounted, ref } from 'vue'
 import { ElAlert, ElDescriptions, ElDescriptionsItem, ElSkeleton } from 'element-plus'
 import { fetchCurrentWeather } from '../services/weatherApi.js'
 
+/**
+ * fallback 없는 API 확인 목적은 유지하고 loading·error·success 표현만 Element Plus로 바꾼다.
+ * Skeleton, error Alert, Descriptions가 서로 배타적으로 현재 요청 결과를 나타낸다.
+ */
 const weather = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -28,6 +32,7 @@ onMounted(loadSeoulWeather)
   <section class="weather-api-test">
     <h2>서울 현재 날씨 API 테스트</h2>
 
+    <!-- 실제 요청 결과를 확인하는 화면이므로 오류를 warning이 아닌 error Alert로 표시한다. -->
     <ElSkeleton
       v-if="isLoading"
       class="weather-api-test__skeleton"

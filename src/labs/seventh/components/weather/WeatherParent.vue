@@ -11,6 +11,10 @@ import BaseDashboardCard from './BaseDashboardCard.vue'
 import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
+/**
+ * sixth의 데이터 소유와 API fallback 흐름을 유지하면서 요청 상태를 Element Plus UI에 연결한다.
+ * loading은 Skeleton, 일부 도시 fallback은 warning Alert, 정상 결과는 카드 목록으로 표현한다.
+ */
 const router = useRouter()
 const configStore = useConfigStore()
 
@@ -24,6 +28,7 @@ const failedCityNames = computed(() =>
   weatherCities.filter((city) => failedCityIds.value.includes(city.id)).map((city) => city.name),
 )
 
+// 실패 도시 목록을 Alert가 표시할 하나의 안내 문구로 파생한다.
 const fallbackMessage = computed(() =>
   failedCityNames.value.length
     ? `${failedCityNames.value.join(', ')}의 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
@@ -120,6 +125,7 @@ const showDetail = (weather) => {
 
     <BaseDashboardCard aria-labelledby="seventh-weather-list-title">
       <h2 id="seventh-weather-list-title">🏙️ 지역별 날씨 현황</h2>
+      <!-- 요청 중에는 Skeleton을 우선 표시하고 완료 후에만 fallback 안내를 판정한다. -->
       <ElSkeleton
         v-if="isLoadingWeather"
         class="weather-load-skeleton"
@@ -135,6 +141,7 @@ const showDetail = (weather) => {
         show-icon
         :closable="false"
       />
+      <!-- 검색 결과 없음은 API 오류가 아니므로 Alert 대신 기존 빈 결과 안내로 구분한다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
         <WeatherCard
           v-for="weather in filteredWeatherList"
