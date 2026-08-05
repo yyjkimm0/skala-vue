@@ -1,4 +1,5 @@
-// 다섯 번째 과제 화면에서 사용하는 고정 날씨 Mock Data입니다.
+// 외부 API 도입 전 목록 카드와 상세 View가 함께 조회하는 고정 날씨 Mock Data다.
+// id는 반복 key와 route param의 조회 기준이며 temp는 변환 전 섭씨 원본값으로 보존한다.
 export const weatherList = [
   {
     id: 'city_01',

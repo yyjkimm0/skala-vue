@@ -6,6 +6,7 @@ import './assets/lab.css'
 /**
  * fourth의 route shell에 전역 단위 전환 UI를 추가한다.
  * Pinia는 최상위 앱에서 한 번 설치되며 fifth의 View들은 같은 config Store를 공유한다.
+ * 자식 View가 교체돼도 이 shell의 UnitToggler와 Store는 같은 SPA 실행 범위에 유지된다.
  */
 </script>
 

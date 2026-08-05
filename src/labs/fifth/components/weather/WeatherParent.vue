@@ -10,9 +10,9 @@ import SearchBar from './SearchBar.vue'
 import WeatherCard from './WeatherCard.vue'
 
 /**
- * fourth의 Router 구조를 유지하면서 Pinia의 전역 표시 단위를 목록에 연결한 단계다.
- * Mock Data의 섭씨 원본값은 보존하고 Store 단위에 맞춘 값만 화면에 전달한다.
- * 외부 API 연동은 아직 도입하지 않는다.
+ * 검색과 카드 선택은 이 Home 부모의 로컬 상태로 관리하고 자식 이벤트를 받아 갱신한다.
+ * 여러 route가 공유하는 표시 단위만 Pinia에서 읽어 Mock Data의 섭씨 원본과 분리한다.
+ * 카드의 상세 의도는 cityId 동적 route 이동으로 연결하며 외부 API는 아직 사용하지 않는다.
  */
 const router = useRouter()
 // 최상위 Pinia 컨텍스트에서 UnitToggler와 상세 View가 사용하는 동일 Store에 접근한다.
@@ -20,6 +20,8 @@ const configStore = useConfigStore()
 const searchQuery = ref('')
 const selectedCityInfo = ref(null)
 
+// 검색어를 정규화한 뒤 도시명의 부분 문자열을 찾고, 빈 검색어이면 원본 목록 전체를 반환한다.
+// filter가 새 배열을 만들므로 공유 Mock Data는 직접 변경하지 않는다.
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
 
@@ -40,14 +42,17 @@ const selectedTemperature = computed(() => {
 })
 
 const updateSearchQuery = (value) => {
+  // SearchBar가 emit한 문자열의 원본 상태는 부모가 소유한다.
   searchQuery.value = value
 }
 
 const selectCity = (weather) => {
+  // WeatherCard가 payload로 보낸 도시 객체를 선택 상태바의 기준으로 보관한다.
   selectedCityInfo.value = weather
 }
 
 const showDetail = (weather) => {
+  // 자식은 Router를 알지 않고, 부모가 고유 id를 동적 route param으로 전달한다.
   router.push({
     name: 'fifth-weather-detail',
     params: {
@@ -57,12 +62,14 @@ const showDetail = (weather) => {
 }
 
 watch(selectedCityInfo, (newCity, oldCity) => {
+  // immediate 옵션이 없으므로 최초 마운트가 아니라 실제 선택 변경부터 이전·현재 값을 비교한다.
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
 })
 
 watchEffect(() => {
+  // 최초 한 번 실행된 뒤 읽은 검색어와 computed 결과를 자동 추적해 검색 상태를 기록한다.
   const query = searchQuery.value.trim()
   const resultNames = filteredWeatherList.value.map((weather) => weather.name)
 
@@ -74,6 +81,7 @@ watchEffect(() => {
 
 <template>
   <div class="weather-mockup">
+    <!-- 공통 외곽의 기본 slot에 검색 기능을 조합한다. -->
     <BaseDashboardCard>
       <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
@@ -82,7 +90,7 @@ watchEffect(() => {
       <h2 id="fifth-weather-list-title">🏙️ 지역별 날씨 현황</h2>
 
       <div v-if="filteredWeatherList.length" class="weather-grid">
-        <!-- Store에서 읽은 단위와 기호를 각 카드에 내려 동일한 표시 정책을 적용한다. -->
+        <!-- 도시 id를 안정적인 key로 쓰고 Store의 단위와 기호를 각 카드에 내려준다. -->
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"
@@ -94,6 +102,7 @@ watchEffect(() => {
         />
       </div>
 
+      <!-- computed 결과가 비었을 때만 카드 목록 대신 검색 결과 없음 상태를 표시한다. -->
       <p v-else class="empty-state">검색 결과와 일치하는 도시가 없습니다.</p>
     </BaseDashboardCard>
 

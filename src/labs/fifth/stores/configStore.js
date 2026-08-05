@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 /**
  * fifth에서 사용할 화면 표시 단위를 전역으로 관리한다.
  * 목록과 상세 화면이 prop 연결 없이도 같은 단위 정책과 변경 규칙을 공유한다.
+ * SPA의 route 이동 중에는 유지되지만 별도 영속화가 없어 새로고침하면 초기값으로 시작한다.
  */
 // 여러 lab Store가 같은 Pinia에 등록되므로 fifth 전용 id로 상태 모듈을 구분한다.
 export const useConfigStore = defineStore('fifth-config', {

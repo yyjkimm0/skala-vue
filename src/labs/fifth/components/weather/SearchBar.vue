@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * 부모가 소유한 검색어를 읽기 전용 prop으로 표시하고 입력값만 이벤트로 돌려준다.
+ * Router나 Store를 알지 않으며 검색 상태를 직접 보관하거나 prop을 변경하지 않는다.
+ */
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -9,6 +13,7 @@ const props = defineProps({
 const emit = defineEmits(['update-query'])
 
 const handleInput = (event) => {
+  // native input의 현재 문자열을 전달하면 부모가 원본 상태를 갱신한다.
   emit('update-query', event.target.value)
 }
 </script>
