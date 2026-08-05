@@ -52,6 +52,7 @@ const router = createRouter({
     },
     {
       path: '/seventh',
+      component: () => import('../labs/seventh/App.vue'),
       meta: { labId: 'seventh' },
       children: seventhRoutes,
     },
