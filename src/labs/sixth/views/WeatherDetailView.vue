@@ -9,7 +9,8 @@ import { convertTemperature } from '../utils/temperature.js'
 
 /**
  * route의 도시 설정으로 상세 날씨를 다시 요청하고 실패하면 같은 도시의 Mock Data를 표시한다.
- * 목록 데이터를 공유하지 않아 상세 URL로 직접 진입해도 자체적으로 데이터를 준비할 수 있다.
+ * 목록과 선택 상태를 공유하지 않아 상세 URL 직접 접근과 새로고침에도 데이터를 준비한다.
+ * 전역 단위만 같은 Store에서 읽고 상세 weather·loading·error는 이 View가 소유한다.
  */
 const route = useRoute()
 const configStore = useConfigStore()
@@ -71,6 +72,7 @@ const loadWeatherDetail = async () => {
   }
 }
 
+// 최초 직접 진입과 같은 View 안의 cityId 변경 모두에서 독립 요청 흐름을 시작한다.
 watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 </script>
 

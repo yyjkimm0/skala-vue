@@ -1,4 +1,5 @@
 <template>
+  <!-- 날씨 데이터나 Router를 모르는 표현 컴포넌트로, 기본 slot을 공통 외곽에 배치한다. -->
   <section class="dashboard-card">
     <slot />
   </section>

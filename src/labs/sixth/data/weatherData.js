@@ -1,4 +1,5 @@
-// API 요청이 실패한 도시만 대체할 수 있도록 내부 weather model과 같은 형태로 유지한다.
+// 기본 원천이 아니라 API 요청이 실패한 도시만 대체하는 fallback 데이터다.
+// API mapper와 같은 내부 필드 및 섭씨 원본을 사용해 검색·카드·상세가 출처에 의존하지 않는다.
 export const weatherList = [
   {
     id: 'city_01',

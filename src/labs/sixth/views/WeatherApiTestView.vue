@@ -5,6 +5,7 @@ import { fetchCurrentWeather } from '../services/weatherApi.js'
 /**
  * 대시보드와 분리된 최소 화면에서 서울 API 요청과 내부 weather model을 확인한다.
  * 여기서는 Mock fallback을 사용하지 않아 실제 요청 실패가 error 상태로 그대로 드러난다.
+ * 오류 객체나 API Key는 화면에 노출하지 않고 안전한 사용자 메시지만 저장한다.
  */
 const weather = ref(null)
 const isLoading = ref(false)

@@ -12,6 +12,7 @@ const openWeatherApi = axios.create({
 
 /**
  * 도시 설정을 받아 현재 날씨를 요청한 뒤 화면 공통 모델로 변환해 반환한다.
+ * Current Weather endpoint에 도시 query, metric 단위, 한국어 응답 설정과 API Key를 전달한다.
  * 요청이나 설정 검증 오류는 숨기지 않고 호출자에게 전달해 fallback 여부를 결정하게 한다.
  */
 export const fetchCurrentWeather = async (city) => {

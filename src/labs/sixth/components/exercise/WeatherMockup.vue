@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch, watchEffect } from 'vue'
 
+/** 현재 sixth route에서 사용하지 않고 이전 단일 컴포넌트 실습 구조를 보존한 파일이다. */
 const weatherList = [
   { id: 'city_01', name: '서울', temp: 28, status: '맑음' },
   { id: 'city_02', name: '수원', temp: 24, status: '비' },

@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+/** 현재 sixth 실행 경로에서 import하지 않는 초기 템플릿 보존 파일이다. */
+</script>
 
 <template>
   <h1>You did it!</h1>
