@@ -1,4 +1,6 @@
 <script setup>
+import { ElInput } from 'element-plus'
+
 const props = defineProps({
   searchQuery: {
     type: String,
@@ -8,20 +10,21 @@ const props = defineProps({
 
 const emit = defineEmits(['update-query'])
 
-const handleInput = (event) => {
-  emit('update-query', event.target.value)
+const handleInput = (value) => {
+  emit('update-query', value)
 }
 </script>
 
 <template>
   <div class="search-bar">
     <label for="seventh-city-search">🔍 도시 검색</label>
-    <input
+    <ElInput
       id="seventh-city-search"
-      type="text"
-      :value="props.searchQuery"
+      class="search-input"
+      :model-value="props.searchQuery"
       placeholder="도시명을 입력하세요"
-      @input="handleInput"
+      clearable
+      @update:model-value="handleInput"
     />
     <p class="input-status">
       {{
@@ -46,19 +49,9 @@ label {
   font-weight: 700;
 }
 
-input {
+.search-input {
   width: 100%;
   min-width: 0;
-  padding: 8px 9px;
-  border: 1px solid #cbd5e1;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font: inherit;
-}
-
-input:focus {
-  border-color: #2563eb;
-  outline: 3px solid #dbeafe;
 }
 
 .input-status {

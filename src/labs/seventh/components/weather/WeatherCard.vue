@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { ElButton } from 'element-plus'
 import { convertTemperature } from '../../utils/temperature.js'
 
 const props = defineProps({
@@ -57,13 +58,15 @@ const clickDetail = () => {
         ❄️ 선선함 (25도 미만)
       </span>
     </div>
-    <button
-      type="button"
+    <ElButton
+      class="weather-card__detail"
+      size="small"
+      plain
       @click.stop="clickDetail"
       @keydown.enter.stop
     >
       상세보기
-    </button>
+    </ElButton>
   </article>
 </template>
 
@@ -125,26 +128,9 @@ h3 {
   background: #38bdf8;
 }
 
-button {
+.weather-card__detail {
   flex: 0 0 auto;
-  padding: 5px 8px;
-  border: 1px solid #9ca3af;
-  border-radius: 2px;
-  color: #374151;
-  background: #fff;
-  font: inherit;
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #f3f4f6;
-}
-
-button:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 2px;
+  margin: 0;
 }
 
 @media (max-width: 340px) {
