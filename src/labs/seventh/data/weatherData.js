@@ -1,4 +1,5 @@
-// 과제 화면에서 사용하는 고정 날씨 Mock Data입니다.
+// 기본 원천이 아니라 API 요청이 실패한 도시만 대체하는 fallback 데이터다.
+// mapper 결과와 같은 내부 필드 및 섭씨 원본을 사용해 UI가 데이터 출처에 의존하지 않는다.
 export const weatherList = [
   {
     id: 'city_01',

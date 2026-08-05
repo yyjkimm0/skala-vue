@@ -6,6 +6,7 @@ import { fetchCurrentWeather } from '../services/weatherApi.js'
 /**
  * fallback 없는 API 확인 목적은 유지하고 loading·error·success 표현만 Element Plus로 바꾼다.
  * Skeleton, error Alert, Descriptions가 서로 배타적으로 현재 요청 결과를 나타낸다.
+ * API Key나 오류 객체를 노출하지 않고 실패 시 안전한 사용자 메시지만 표시한다.
  */
 const weather = ref(null)
 const isLoading = ref(false)

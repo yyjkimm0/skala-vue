@@ -4,8 +4,8 @@ import { ElButton, ElTag } from 'element-plus'
 import { convertTemperature } from '../../utils/temperature.js'
 
 /**
- * 기존 article의 카드 선택 동작은 유지하고 상태 Tag와 상세 Button만 Element Plus로 표현한다.
- * 카드 전체 선택과 상세 이동은 서로 다른 사용자 의도로 부모에 전달된다.
+ * API와 fallback이 공유하는 내부 모델을 기존 article 선택 흐름과 동일하게 표시한다.
+ * ElTag와 ElButton은 상태와 행동을 표현하고, 선택과 상세 의도는 각각 부모에 전달한다.
  */
 const props = defineProps({
   weather: {
@@ -39,6 +39,7 @@ const clickDetail = () => {
 </script>
 
 <template>
+  <!-- 포인터 클릭과 Enter가 같은 선택 이벤트를 사용하며 실제 선택 상태는 부모가 소유한다. -->
   <article class="weather-card" tabindex="0" @click="selectCard" @keydown.enter="selectCard">
     <div class="weather-card__info">
       <h3>{{ props.weather.name }} ({{ props.weather.status }})</h3>

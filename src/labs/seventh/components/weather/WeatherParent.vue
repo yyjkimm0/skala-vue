@@ -13,7 +13,8 @@ import WeatherCard from './WeatherCard.vue'
 
 /**
  * sixth의 데이터 소유와 API fallback 흐름을 유지하면서 요청 상태를 Element Plus UI에 연결한다.
- * loading은 Skeleton, 일부 도시 fallback은 warning Alert, 정상 결과는 카드 목록으로 표현한다.
+ * 상태 영역은 loading Skeleton과 fallback Alert를 순서대로 구분하고 카드 목록은 별도로 유지한다.
+ * 검색·선택은 로컬, 단위는 Pinia, 날씨·요청은 서버 상태이고 Element Plus는 표현만 맡는다.
  */
 const router = useRouter()
 const configStore = useConfigStore()
@@ -35,6 +36,8 @@ const fallbackMessage = computed(() =>
     : '',
 )
 
+// API와 fallback을 합친 내부 모델의 도시명을 검색하고 빈 검색어이면 전체 목록을 반환한다.
+// trim과 부분 문자열 비교만 적용하며 현재 서버 결과 배열은 직접 변경하지 않는다.
 const filteredWeatherList = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase()
 
@@ -56,10 +59,12 @@ const selectedTemperature = computed(() => {
 })
 
 const selectCity = (weather) => {
+  // WeatherCard가 payload로 전달한 도시 객체는 Home 부모의 선택 상태로 보관한다.
   selectedCityInfo.value = weather
 }
 
 const updateSearchQuery = (value) => {
+  // ElInput의 model update·clear·IME 입력을 하나의 부모 검색 상태에 반영한다.
   searchQuery.value = value
 }
 
@@ -68,6 +73,7 @@ const loadWeather = async () => {
   failedCityIds.value = []
 
   try {
+    // 병렬 요청 중 일부가 실패해도 allSettled 결과 순서로 도시별 성공값과 fallback을 결합한다.
     const results = await Promise.allSettled(
       weatherCities.map((cityConfig) => fetchCurrentWeather(cityConfig)),
     )
@@ -77,11 +83,13 @@ const loadWeather = async () => {
       result.status === 'fulfilled' ? result.value : mockWeatherById.get(weatherCities[index].id),
     )
 
+    // 실패 도시만 별도 기록해 대체 데이터가 포함됐음을 warning Alert로 숨김없이 알린다.
     failedCityIds.value = results.flatMap((result, index) =>
       result.status === 'rejected' ? [weatherCities[index].id] : [],
     )
 
     if (selectedCityInfo.value) {
+      // API 결과 배열이 교체되면 선택 도시도 id로 다시 찾아 오래된 객체 참조를 갱신한다.
       selectedCityInfo.value =
         weatherItems.value.find((weather) => weather.id === selectedCityInfo.value.id) ?? null
     }
@@ -93,12 +101,14 @@ const loadWeather = async () => {
 onMounted(loadWeather)
 
 watch(selectedCityInfo, (newCity, oldCity) => {
+  // immediate 옵션이 없어 최초 마운트가 아니라 실제 선택 객체 변경부터 비교한다.
   console.log('[watch] 선택 도시 변경')
   console.log(`이전 도시: ${oldCity?.name ?? '선택 없음'}`)
   console.log(`현재 도시: ${newCity?.name ?? '선택 없음'}`)
 })
 
 watchEffect(() => {
+  // 최초 실행 후 검색어와 computed 결과를 자동 추적하며 API 목록 교체에도 다시 실행된다.
   const query = searchQuery.value.trim()
   const resultNames = filteredWeatherList.value.map((weather) => weather.name)
 
@@ -108,6 +118,7 @@ watchEffect(() => {
 })
 
 const showDetail = (weather) => {
+  // 카드가 Router를 직접 다루지 않도록 부모가 내부 도시 id를 동적 route param으로 전달한다.
   router.push({
     name: 'seventh-weather-detail',
     params: {
@@ -119,6 +130,7 @@ const showDetail = (weather) => {
 
 <template>
   <div class="weather-mockup">
+    <!-- ElCard 공통 외곽의 기본 slot에 검색 UI를 조합한다. -->
     <BaseDashboardCard>
       <SearchBar :search-query="searchQuery" @update-query="updateSearchQuery" />
     </BaseDashboardCard>
@@ -143,6 +155,7 @@ const showDetail = (weather) => {
       />
       <!-- 검색 결과 없음은 API 오류가 아니므로 Alert 대신 기존 빈 결과 안내로 구분한다. -->
       <div v-if="filteredWeatherList.length" class="weather-grid">
+        <!-- 도시 id를 안정적인 key로 쓰고 Store의 표시 단위만 카드에 전달한다. -->
         <WeatherCard
           v-for="weather in filteredWeatherList"
           :key="weather.id"

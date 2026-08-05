@@ -9,8 +9,8 @@ import { useConfigStore } from '../stores/configStore.js'
 import { convertTemperature } from '../utils/temperature.js'
 
 /**
- * sixth의 상세 요청과 fallback 판단은 유지하고 대기·경고·성공 정보를 Element Plus로 구분한다.
- * Skeleton 뒤에 warning Alert와 Descriptions를 배치해 Mock 사용 여부와 상세값을 함께 보여준다.
+ * route의 도시 설정만으로 API를 다시 요청해 목록 상태 없이 직접 접근·새로고침을 지원한다.
+ * Skeleton 뒤에 fallback Alert와 Descriptions를 배치하고 같은 Store 단위로 기온을 표시한다.
  */
 const route = useRoute()
 const configStore = useConfigStore()
@@ -36,6 +36,7 @@ const locationNames = {
 }
 
 const loadWeatherDetail = async () => {
+  // 연속 cityId 변경에서 늦게 끝난 이전 요청이 최신 데이터와 loading을 덮지 못하게 한다.
   const loadId = ++latestLoadId
   const cityId = route.params.cityId
   const cityConfig = findWeatherCityById(cityId)
@@ -57,6 +58,7 @@ const loadWeatherDetail = async () => {
       city.value = currentWeather
     }
   } catch {
+    // 유효한 도시의 최신 요청 실패만 같은 내부 모델의 Mock Data와 warning 상태로 대체한다.
     if (loadId === latestLoadId) {
       city.value = mockCity ?? null
       errorMessage.value = `${cityConfig.name} 실시간 날씨를 불러오지 못해 Mock Data를 표시하고 있습니다.`
@@ -69,6 +71,7 @@ const loadWeatherDetail = async () => {
   }
 }
 
+// 최초 진입과 동일 View 안의 route param 변경 모두에서 독립 요청을 시작한다.
 watch(() => route.params.cityId, loadWeatherDetail, { immediate: true })
 </script>
 
